@@ -14,14 +14,10 @@
 #include "defc.h"
 
 #include "disas.h"
+#include "../../debugmcp/debug_server.h"
 
 #define LINE_SIZE		160		/* Input buffer size */
 #define PRINTF_BUF_SIZE		239
-#define DEBUG_ENTRY_MAX_CHARS	80
-
-STRUCT(Debug_entry) {
-	byte str_buf[DEBUG_ENTRY_MAX_CHARS];
-};
 
 char g_debug_printf_buf[PRINTF_BUF_SIZE];
 char g_debug_stage_buf[PRINTF_BUF_SIZE];
@@ -101,7 +97,7 @@ char g_disas_buffer[MAX_DISAS_BUF];
 void
 debugger_init()
 {
-	debugger_help();
+	//debugger_help();
 	g_list_kpc = engine.kpc;
 #if 0
 	if(g_num_breakpoints == 0) {
@@ -199,6 +195,9 @@ debugger_run_16ms()
 	if(g_dbg_new_halt) {
 		g_list_kpc = engine.kpc;
 		show_regs();
+		debug_server_notify_break(engine.kpc, engine.acc, engine.xreg,
+		    engine.yreg, engine.stack, engine.direct, engine.dbank,
+		    engine.psr, g_halt_sim >= 2 ? 2 : 3);
 	}
 	g_dbg_new_halt = 0;
 	adb_nonmain_check();
@@ -669,6 +668,7 @@ do_debug_cmd(const char *in_str)
 		mode = 0;
 		switch(ret_val) {
 		case 'h':
+		case '?':
 			debugger_help();
 			break;
 		case 'R':
@@ -718,6 +718,12 @@ do_debug_cmd(const char *in_str)
 		case 'r':
 			do_reset();
 			g_list_kpc = engine.kpc;
+			break;
+		case 'C':
+			load_roms_init_memory();
+			do_reset();
+			g_list_kpc = engine.kpc;
+			dbg_printf("Cold reset: RAM cleared, reset vector fetched\n");
 			break;
 		case 'm':
 			if(old_mode == '=') {
@@ -2136,12 +2142,29 @@ dbg_printf(const char *fmt, ...)
 	return ret;
 }
 
+/* Capture buffer used by debug_server.c to intercept do_debug_cmd() output */
+extern char *g_dbg_capture;
+extern int   g_dbg_capture_len;
+extern int   g_dbg_capture_cap;
+
 int
 dbg_vprintf(const char *fmt, va_list args)
 {
 	int	ret;
 
 	ret = vsnprintf(&g_debug_printf_buf[0], PRINTF_BUF_SIZE, fmt, args);
+	{
+		int slen = (ret > 0 && ret < PRINTF_BUF_SIZE) ? ret : PRINTF_BUF_SIZE - 1;
+		/* Feed into persistent log ring buffer (always on) */
+		debug_server_log(g_debug_printf_buf, slen);
+		/* Feed into per-command capture buffer when active */
+		if(g_dbg_capture &&
+		   g_dbg_capture_len + slen < g_dbg_capture_cap - 1) {
+			memcpy(g_dbg_capture + g_dbg_capture_len, g_debug_printf_buf, slen);
+			g_dbg_capture_len += slen;
+			g_dbg_capture[g_dbg_capture_len] = 0;
+		}
+	}
 	debug_add_output_chars(&g_debug_printf_buf[0]);
 	return ret;
 }

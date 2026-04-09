@@ -155,6 +155,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
 	var mainwin_info = Window_info();
 	var debugwin_info = Window_info();
+	var debugConsole  = DebugConsoleWindowController()
 
 	func find_win_info(_ window: NSWindow) -> Window_info {
 		if(mainwin_info.x_win == window) {
@@ -360,6 +361,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 		}
 		mainwin_info.update()
 		debugwin_info.update()
+		debugConsole.updateIfNeeded()
 	}
 }
 

@@ -176,6 +176,20 @@ STRUCT(Kimage) {
 	word32	scale_height[MAX_SCALE_SIZE + 1];
 };
 
+#define DEBUG_ENTRY_MAX_CHARS	80
+
+STRUCT(Debug_entry) {
+	byte str_buf[DEBUG_ENTRY_MAX_CHARS];
+};
+
+extern Debug_entry *g_debug_lines_ptr;
+extern int g_debug_lines_total;
+extern int g_debug_lines_pos;
+extern int g_debug_lines_alloc;
+extern int g_halt_sim;
+extern byte g_debug_buf[];
+extern byte g_wdm_trap_enabled[];
+
 typedef byte *Pg_info;
 STRUCT(Page_info) {
 	Pg_info rd_wr;

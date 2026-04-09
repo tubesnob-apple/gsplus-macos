@@ -25,7 +25,20 @@ case 0x00:			/*  brk */
 		PUSH16(kpc);
 		PUSH8(psr & 0xff);
 		tmp1 = 0xffffe6;
-		halt_printf("Halting for native break!\n");
+		/* Log full CPU state at BRK site so MCP get_log can read it    */
+		/* without relying on screen text.  kpc is already BRK_addr+2   */
+		/* (INC_KPC_2 ran above), so subtract 2 to recover BRK address. */
+		halt_printf("DBG #$%02x at %02x/%04x\n",
+			arg & 0xff, (kpc - 2) >> 16, (kpc - 2) & 0xffff);
+		/* K=PBR  m/x/e are PSR bits 5,4,8 (acc width, idx width, emul) */
+		halt_printf("  PC=%02x/%04x A=%04x X=%04x Y=%04x"
+			" S=%04x D=%04x B=%02x K=%02x P=%03x"
+			" m=%d x=%d e=%d\n",
+			(kpc - 2) >> 16, (kpc - 2) & 0xffff,
+			acc, xreg, yreg, stack, direct, dbank,
+			(kpc - 2) >> 16,
+			psr,
+			(psr >> 5) & 1, (psr >> 4) & 1, (psr >> 8) & 1);
 	}
 	tmp1 = moremem_fix_vector_pull(tmp1);
 	GET_MEMORY16(tmp1, kpc, 0);
@@ -443,11 +456,18 @@ case 0x41:			/*  EOR (Dloc,X) */
 	EOR_INST();
 	break;
 
-case 0x42:			/*  WDM */
-	GET_2BYTE_ARG;
+case 0x42:			/*  DBG / WDM */
+	GET_1BYTE_ARG;
+	if(arg <= 0x7f) {	/* DBG $00-$7F: emulator debug trap */
+		INC_KPC_2;
+		FINISH(RET_DBG, arg);
+		break;
+	}
+	/* Standard WDM handling for arg $80-$FF */
+	arg = arg_ptr[1] + (arg_ptr[2] << 8);
 	INC_KPC_2;
 	if(arg < 0x100) {	// Next byte is 00
-		INC_KPC_1;	// Skip over the BRK
+		INC_KPC_1;	// Skip over the trailing byte
 	}
 	FINISH(RET_WDM, arg);
 	break;

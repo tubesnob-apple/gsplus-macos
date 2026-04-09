@@ -1,2 +1,6 @@
 *.o
-
+CLAUDE.md
+.claude/
+.mcp.json
+debugmcp/__pycache__/
+gsplus/GSplus.app/

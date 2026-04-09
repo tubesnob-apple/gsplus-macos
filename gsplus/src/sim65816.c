@@ -14,6 +14,8 @@
 #include "defc.h"
 #undef INCLUDE_RCSID_C
 
+#include "../../debugmcp/debug_server.h"
+
 double g_dtime_sleep = 0;
 double g_dtime_in_sleep = 0;
 extern char *g_argv0_path;
@@ -67,6 +69,8 @@ extern int g_preferred_rate;
 int	g_a2_fatal_err = 0;
 dword64	g_dcycles_end = 0;
 int	g_halt_sim = 0;
+byte	g_debug_buf[0x10000];	/* D0/0000 shadow — debug string buffer */
+byte	g_wdm_trap_enabled[128];	/* [0] always 0; [1..127] = 1 by default */
 int	g_rom_version = -1;
 int	g_user_halt_bad = 0;
 int	g_halt_on_bad_read = 0;
@@ -654,6 +658,9 @@ kegs_init(int mdepth, int screen_width, int screen_height, int no_scale_window)
 
 	woz_crc_init();
 	fixed_memory_ptrs_init();
+	/* WDM trap defaults: $00 always off, $01-$7F all on */
+	memset(g_wdm_trap_enabled, 1, sizeof(g_wdm_trap_enabled));
+	g_wdm_trap_enabled[0] = 0;
 
 	if(sizeof(word32) != 4) {
 		printf("sizeof(word32) = %d, must be 4!\n",
@@ -667,6 +674,7 @@ kegs_init(int mdepth, int screen_width, int screen_height, int no_scale_window)
 	adb_init();
 	initialize_events();
 	debugger_init();
+	debug_server_init();
 	setup_pageinfo();
 
 	config_init();
@@ -777,8 +785,8 @@ add_event_entry(dword64 dfcyc, int type)
 
 	if((dfcyc > (g_cur_dfcyc + (50LL*1000*1000 << 16))) ||
 						(dfcyc < g_cur_dfcyc)) {
-		halt_printf("add_event bad dfcyc:%016llx, type:%05x, "
-			"cur_dfcyc: %016llx!\n", dfcyc, type, g_cur_dfcyc);
+		//halt_printf("add_event bad dfcyc:%016llx, type:%05x, "
+		//	"cur_dfcyc: %016llx!\n", dfcyc, type, g_cur_dfcyc);
 		dfcyc = g_cur_dfcyc + (1000LL << 16);
 	}
 
@@ -1062,6 +1070,7 @@ run_16ms()
 			ret = run_a2_one_vbl();
 		}
 	}
+	debug_server_poll();
 	video_update();
 	g_vbl_count++;
 	dtime_end = get_dtime();
@@ -1843,6 +1852,9 @@ handle_action(word32 ret)
 	case RET_WDM:
 		do_wdm(arg);
 		break;
+	case RET_DBG:
+		do_dbg(arg);
+		break;
 	case RET_STP:
 		do_stp();
 		break;
@@ -1870,6 +1882,28 @@ do_cop(word32 ret)
 {
 	halt_printf("COP instr %02x!\n", ret);
 	fflush(stdout);
+}
+
+/* Emit the per-slot debug buffer string and clear the full 256-byte slot.
+ * Each WDM operand $00-$7F maps to its own slot: slot N = g_debug_buf[N*0x100]. */
+static void
+dbg_emit_and_clear_buf(word32 arg, int raw)
+{
+	/* Each WDM operand $00-$7F gets its own 256-byte slot in g_debug_buf.
+	 * Slot N starts at offset N*0x100; strings are limited to 255 chars. */
+	byte	*slot;
+	int	len;
+
+	slot = g_debug_buf + ((arg & 0x7f) * 0x100);
+	len = strnlen((char *)slot, 255);
+	if(len > 0) {
+		if(raw) {
+			dbg_printf("%.*s", len, (char *)slot);
+		} else {
+			dbg_printf(" : %.*s", len, (char *)slot);
+		}
+	}
+	memset(slot, 0, 256);	/* always clear the full 256-byte slot */
 }
 
 void
@@ -1903,14 +1937,48 @@ do_wdm(word32 arg)
 	switch(arg & 0xff) {
 	case 0x8d: /* Bouncin Ferno does WDM 8d */
 		break;
-	case 0xea:	// Detectiong feature, don't flag an error
+	case 0xea:	// Detection feature, don't flag an error
 		break;
 	case 0xfc:	// HOST.FST "head_call" for ATINIT for ProDOS 8
 	case 0xfd:	// HOST.FST "tail_call" for ATINIT for ProDOS 8
 	case 0xff:	// HOST.FST "call_host" for GS/OS driver
 		break;
 	default:
-		halt_printf("do_wdm: %04x!\n", arg);
+		dbg_printf("WDM #$%02x\n", arg & 0xff);
+	}
+}
+
+void
+do_dbg(word32 arg)
+{
+	word32	dbg_kpc;
+	word32	slot_arg;
+
+	slot_arg = arg & 0x7f;
+	dbg_kpc = (engine.kpc - 2) & 0xffffff;
+
+	if(slot_arg == 0) {
+		/* WDM $00: just emit the debug string, no adornment,
+		 * no registers, never halts. Caller supplies newline. */
+		dbg_emit_and_clear_buf(arg, 1);
+		return;
+	}
+
+	/* WDM $01-$7F: full adornment + register dump */
+	dbg_printf("WDM #$%02x at %02x/%04x", slot_arg,
+		dbg_kpc >> 16, dbg_kpc & 0xffff);
+	dbg_emit_and_clear_buf(arg, 0);
+	dbg_printf("\n");
+	dbg_printf("  A=%04x X=%04x Y=%04x S=%04x D=%04x B=%02x P=%03x"
+		" m=%d x=%d e=%d\n",
+		engine.acc, engine.xreg, engine.yreg, engine.stack,
+		engine.direct, engine.dbank, engine.psr,
+		(engine.psr >> 5) & 1, (engine.psr >> 4) & 1,
+		(engine.psr >> 8) & 1);
+
+	/* WDM $10-$7F: halt if trap enabled (WDM $01-$0F never halt) */
+	if(slot_arg >= 0x10 && g_wdm_trap_enabled[slot_arg]) {
+		set_halt_act(2);	/* val=2 bypasses g_ignore_halts, always halts */
 	}
 }
 
