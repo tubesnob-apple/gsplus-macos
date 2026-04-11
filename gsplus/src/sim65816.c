@@ -1958,9 +1958,10 @@ do_dbg(word32 arg)
 	dbg_kpc = (engine.kpc - 2) & 0xffffff;
 
 	if(slot_arg == 0) {
-		/* WDM $00: just emit the debug string, no adornment,
-		 * no registers, never halts. Caller supplies newline. */
+		/* WDM $00: just emit the debug string + newline, no adornment,
+		 * no registers, never halts. */
 		dbg_emit_and_clear_buf(arg, 1);
+		dbg_printf("\n");
 		return;
 	}
 
