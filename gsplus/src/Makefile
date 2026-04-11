@@ -2,7 +2,7 @@
 
 XOPTS_WIN = -Wall -fomit-frame-pointer -march=pentium
 
-SWIFTOBJS = AppDelegate.o MainView.o
+SWIFTOBJS = AppDelegate.o MainView.o DebugConsoleWindow.o
 
 include vars
 include ldvars
@@ -36,6 +36,7 @@ gsplus: $(OBJECTS) $(OBJECTS1) compile_time.o $(SWIFTOBJS)
 		-L/usr/lib/swift
 	mkdir -p ../GSplus.app/Contents/MacOS
 	mkdir -p ../GSplus.app/Contents/Frameworks
+	mkdir -p ../GSplus.app/Contents/Resources
 	$(PERL) cp_gsplus_libs gsplus /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx ../GSplus.app/Contents/Frameworks
 	mv gsplus ../GSplus.app/Contents/MacOS/GSplus
 	echo "APPL????" > ../GSplus.app/Contents/PkgInfo
@@ -43,6 +44,8 @@ gsplus: $(OBJECTS) $(OBJECTS1) compile_time.o $(SWIFTOBJS)
 	$(PROJROOT)/lib/make_mac_icon $(PROJROOT)/lib/kegsicon.png
 	cp -f kegs.icns ../GSplus.app/Contents/Resources/
 	touch '../GSplus.app/Icon?'
+	rm -f '../GSplus.app/Icon?'
+	codesign --force --deep --sign - ../GSplus.app
 	#cp -f $(PROJROOT)/lib/2mg.icns ../GSplus.app/Contents/Resources/
 	#cp -f $(PROJROOT)/lib/525.icns ../GSplus.app/Contents/Resources/
 
@@ -80,11 +83,18 @@ gspluswin.exe: $(OBJECTS) $(OBJECTS1) compile_time.o
 
 AppDelegate.o: AppDelegate.swift
 	sh ./comp_swift -c $(OPTS) -I. -primary-file $*.swift \
-		MainView.swift -o $*.o
+		MainView.swift DebugConsoleWindow.swift -o $*.o
 
 MainView.o: MainView.swift
 	sh ./comp_swift -c $(OPTS) -I. -primary-file $*.swift \
-		AppDelegate.swift -o $*.o
+		AppDelegate.swift DebugConsoleWindow.swift -o $*.o
+
+DebugConsoleWindow.o: DebugConsoleWindow.swift
+	sh ./comp_swift -c $(OPTS) -I. -primary-file $*.swift \
+		AppDelegate.swift MainView.swift -o $*.o
+
+debug_server.o: ../../debugmcp/debug_server.c ../../debugmcp/debug_server.h
+	$(CC) $(CCOPTS) $(XOPTS) -c $(OPTS) -I. ../../debugmcp/debug_server.c -o debug_server.o
 
 win32.o: win32.rc
 	windres -o win32.o win32.rc

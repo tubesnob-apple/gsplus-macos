@@ -559,6 +559,7 @@ void handle_action(word32 ret);
 void do_break(word32 ret);
 void do_cop(word32 ret);
 void do_wdm(word32 arg);
+void do_dbg(word32 arg);
 void do_wai(void);
 void do_stp(void);
 void do_wdm_emulator_id(void);

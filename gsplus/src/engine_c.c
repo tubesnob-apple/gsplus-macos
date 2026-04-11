@@ -763,9 +763,9 @@ set_halt_act(int val)
 			debugger_update_list_kpc();
 		}
 		g_halt_sim |= val;
-		if(g_halt_sim) {
-			video_set_active(&g_debugwin_kimage, 1);
-		}
+		//if(g_halt_sim) {
+		//	video_set_active(&g_debugwin_kimage, 1);
+		//}
 		g_dcycles_end = 0;
 	}
 }

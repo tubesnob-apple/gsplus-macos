@@ -91,6 +91,14 @@ class MainView: NSView {
 			//  ignore those
 			return
 		}
+		// F8 (keycode 0x64) opens/closes the native debug console.
+		// Intercept here so the emulator never sees the keystroke.
+		if keycode == 0x64 {
+			if let appDelegate = NSApp.delegate as? AppDelegate {
+				appDelegate.debugConsole.toggle()
+			}
+			return
+		}
 		adb_physical_key_update(kimage_ptr, Int32(keycode),
 			UInt32(unicode_key), 0);
 	}

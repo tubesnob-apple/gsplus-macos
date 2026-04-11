@@ -125,6 +125,7 @@ Emustate_dword64list g_emustate_dword64list[] = {
 };
 
 extern word32 g_mem_size_total;
+extern byte g_debug_buf[];
 
 Emustate_word32list g_emustate_word32list[] = {
 	EMUSTATE(g_mem_size_total),
@@ -925,6 +926,10 @@ setup_pageinfo()
 	fixup_shadow_shr();
 	fixup_shadow_iolc();
 	fixup_brks();
+
+	/* Map bank $D0 (above max HW RAM) to the internal debug buffer.
+	 * No shadow flags = fast, invisible to GS/OS memory manager. */
+	fixup_any_bank_any_page(0xd000, 0x100, g_debug_buf, g_debug_buf);
 }
 
 void
@@ -1662,7 +1667,8 @@ io_write(word32 loc, word32 val, dword64 *cyc_ptr)
 			return;
 		case 0x31: /* 0xc031 */
 			tmp = val ^ g_iwm.state;
-			iwm_flush_cur_disk();	// In case APPLE35SEL changes
+			// Do not flush disk here — drive select changing should not
+			// corrupt an in-progress write by flushing the write buffer.
 			g_iwm.state = (g_iwm.state & (~0xc0)) | (val & 0xc0);
 			if(tmp & IWM_STATE_C031_APPLE35SEL) {
 				/* apple35_sel changed, maybe speed change */

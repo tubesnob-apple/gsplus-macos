@@ -112,8 +112,9 @@ doc_reset(dword64 dfcyc)
 	}
 	g_num_osc_interrupting = 0;
 
-	g_doc_num_osc_en = 1;
-	UPDATE_G_DCYCS_PER_DOC_UPDATE(1);
+	// Do not reset g_doc_num_osc_en on warm reset — only valid at startup.
+	// Resetting here breaks audio for programs that changed oscillator count.
+	UPDATE_G_DCYCS_PER_DOC_UPDATE(g_doc_num_osc_en);
 }
 
 int

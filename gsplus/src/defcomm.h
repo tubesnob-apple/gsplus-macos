@@ -60,6 +60,7 @@ const char rcsdif_defcomm_h[] = "@(#)$KmKId: defcomm.h,v 1.109 2023-11-12 15:29:
 #define RET_PSR		0x6
 #define RET_IRQ		0x7
 #define RET_TOOLTRACE	0x8
+#define RET_DBG		0x9
 
 
 #define BIT_ALL_STAT_TEXT		0
