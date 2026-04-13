@@ -129,6 +129,7 @@ char g_cfg_opt_buf[CFG_OPT_MAXSTR];
 char g_cfg_edit_buf[CFG_OPT_MAXSTR];
 
 char *g_cfg_rom_path = "ROM";			// config_init_menus will malloc
+char *g_cfg_symbols_path = "";			// host dir holding <segment>.symbols files
 char *g_cfg_charrom_path = "Undefined";		// config_init_menus will malloc
 int g_cfg_charrom_pos = 0;
 char *g_cfg_file_def_name = "Undefined";
@@ -369,6 +370,7 @@ Cfg_menu g_cfg_main_menu[] = {
 		KNMP(g_user_page2_shadow), CFGTYPE_INT },
 { "Swap Command/Option keys,0,Disabled,1,Swapped",
 				KNMP(g_adb_swap_command_option), CFGTYPE_INT },
+{ "Symbols Path", KNMP(g_cfg_symbols_path), CFGTYPE_FILE },
 { "", 0, 0, 0, 0 },
 { "Save changes to config.kegs", (void *)config_write_config_kegs_file, 0, 0,
 		CFGTYPE_FUNC },

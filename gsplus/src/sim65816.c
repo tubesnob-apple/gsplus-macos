@@ -12,6 +12,7 @@
 
 #define INCLUDE_RCSID_C
 #include "defc.h"
+#include "symbols.h"
 #undef INCLUDE_RCSID_C
 
 #include "../../debugmcp/debug_server.h"
@@ -658,9 +659,13 @@ kegs_init(int mdepth, int screen_width, int screen_height, int no_scale_window)
 
 	woz_crc_init();
 	fixed_memory_ptrs_init();
-	/* WDM trap defaults: $00 always off, $01-$7F all on */
+	symbols_init();
+	/* WDM trap defaults: $00 always off, $01-$7F all on.
+	 * $0F is reserved for the segment-loaded beacon and never halts
+	 * or emits debug-buffer text — see do_dbg(). */
 	memset(g_wdm_trap_enabled, 1, sizeof(g_wdm_trap_enabled));
 	g_wdm_trap_enabled[0] = 0;
+	g_wdm_trap_enabled[0x0f] = 0;
 
 	if(sizeof(word32) != 4) {
 		printf("sizeof(word32) = %d, must be 4!\n",
@@ -1953,6 +1958,7 @@ do_dbg(word32 arg)
 {
 	word32	dbg_kpc;
 	word32	slot_arg;
+	const char *sym;
 
 	slot_arg = arg & 0x7f;
 	dbg_kpc = (engine.kpc - 2) & 0xffffff;
@@ -1965,9 +1971,33 @@ do_dbg(word32 arg)
 		return;
 	}
 
+	if(slot_arg == 0x0f) {
+		/* WDM $0F: segment-loaded beacon. Convention: caller pushes
+		 * the long address of a gsplus_seg_desc via two PEAs:
+		 *     pea  desc>>16   ; pushes 0, bank
+		 *     pea  desc       ; pushes addr_hi, addr_lo
+		 *     wdm  $0f
+		 *     pla
+		 *     pla
+		 * After WDM, top-of-stack bytes (low->high) are:
+		 *   (S+1)=addr_lo (S+2)=addr_hi (S+3)=bank (S+4)=0 */
+		word32 sp = engine.stack;
+		word32 lo = get_memory_c((sp + 1) & 0xffff) & 0xff;
+		word32 mi = get_memory_c((sp + 2) & 0xffff) & 0xff;
+		word32 hi = get_memory_c((sp + 3) & 0xffff) & 0xff;
+		symbols_register_from_desc(lo | (mi << 8) | (hi << 16));
+		return;
+	}
+
 	/* WDM $01-$7F: full adornment + register dump */
-	dbg_printf("WDM #$%02x at %02x/%04x", slot_arg,
-		dbg_kpc >> 16, dbg_kpc & 0xffff);
+	sym = symbols_describe_pc(dbg_kpc);
+	if(sym) {
+		dbg_printf("WDM #$%02x at %02x/%04x [%s]", slot_arg,
+			dbg_kpc >> 16, dbg_kpc & 0xffff, sym);
+	} else {
+		dbg_printf("WDM #$%02x at %02x/%04x", slot_arg,
+			dbg_kpc >> 16, dbg_kpc & 0xffff);
+	}
 	dbg_emit_and_clear_buf(arg, 0);
 	dbg_printf("\n");
 	dbg_printf("  A=%04x X=%04x Y=%04x S=%04x D=%04x B=%02x P=%03x"
