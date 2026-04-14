@@ -90,7 +90,7 @@ The server communicates over stdin/stdout using the MCP protocol.
 
 | Tool | Description |
 |------|-------------|
-| `get_screen_text` | Read the 40-column or 80-column text screen from shadow RAM. Auto-detects column mode and active page from soft switches. Returns 24 fixed-width lines with all character positions preserved. |
+| `get_screen_text` | Read the 40-column or 80-column text screen from shadow RAM. Auto-detects column mode and active page from soft switches. Returns 24 fixed-width lines with all character positions preserved. See the 80-column quirk note below. |
 | `send_keys` | Inject a string of characters into the keyboard buffer. Characters are fed one at a time as the emulated software reads the keyboard. Supports C-style escape sequences: `\n` and `\r` for Return, `\t` for Tab, `\xHH` for any hex byte (e.g. `\x03` for Ctrl-C, `\x1b` for Escape). |
 
 ### System Control
@@ -150,6 +150,42 @@ Response:
 ```json
 {"ok": true, "pc": "01/AF02", "acc": "0000", "xreg": "0000", ...}
 ```
+
+## Notes & Quirks
+
+### 80-column text screen: main/aux variable mislabel in `get_screen_text`
+
+`get_screen_text` reads the Apple IIgs text page from shadow RAM. The
+standard IIgs shadowing convention is:
+
+- Bank `$00` (main memory) shadows into bank `$E0`
+- Bank `$01` (aux memory)  shadows into bank `$E1`
+
+In 80-column mode, the hardware pairs aux + main bytes column-by-column:
+aux supplies the even display columns (0, 2, 4…) and main supplies the
+odd display columns (1, 3, 5…).
+
+**The implementation in `gsplus_mcp.py` has two compensating errors that
+cancel out:**
+
+1. The local variables `main_base` and `aux_base` are swapped relative
+   to the hardware convention — `main_base` points at `$E10400` (which
+   is actually aux) and `aux_base` points at `$E00400` (which is
+   actually main).
+2. The per-row emit loop then writes `main_byte` before `aux_byte`,
+   which — given the swapped variable names — produces the correct
+   aux-then-main visual order on screen.
+
+The code works. But because the two wrongs cancel, fixing only one of
+them will scramble 80-column output pair-by-pair. If you ever clean
+this up, fix both in the same change: rename the variables to match
+the hardware convention and flip the emit order to match.
+
+Also: MouseText glyphs and inverse text are not distinguished from
+their underlying ASCII in the output — bit 7 is stripped and the
+remaining 7 bits are decoded as ASCII. This is intentional (text
+stays readable) but means a Finder-style row of MouseText icons will
+look like random `@ABC…` characters.
 
 ## Troubleshooting
 
