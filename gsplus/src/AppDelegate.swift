@@ -156,12 +156,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 	var mainwin_info = Window_info();
 	var debugwin_info = Window_info();
 	var debugConsole  = DebugConsoleWindowController()
+	var settingsWindow = SettingsWindowController()
 
 	func find_win_info(_ window: NSWindow) -> Window_info {
 		if(mainwin_info.x_win == window) {
 			return mainwin_info
 		}
 		return debugwin_info
+	}
+	@objc func do_preferences(_:AnyObject) {
+		settingsWindow.show()
 	}
 	@objc func do_about(_:AnyObject) {
 		print("About")
@@ -253,6 +257,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 			action: #selector(AppDelegate.do_about(_:)),
 			keyEquivalent: "")
 		kegs.addItem(NSMenuItem.separator())
+		let prefs_item = NSMenuItem(title: "Preferences…",
+			action: #selector(AppDelegate.do_preferences(_:)),
+			keyEquivalent: ",")
+		prefs_item.keyEquivalentModifierMask = [.command]
+		kegs.addItem(prefs_item)
+		kegs.addItem(NSMenuItem.separator())
 		let quit_item = NSMenuItem(title: "Quit \(appname)",
 			action: #selector(NSApplication.terminate(_:)),
 			keyEquivalent: "q")
@@ -278,9 +288,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 		edit_item.submenu = edit
 		menu.addItem(edit_item)
 
-		//   Add "Config" menu
+		//   Add "Config" menu (legacy label kept; F4 opens the native
+		//   Preferences window)
 		let config = NSMenu(title: "Config")
-		config.addItem(withTitle: "Configuration  F4",
+		config.addItem(withTitle: "Preferences…  F4",
 			action: #selector(MainView.do_config(_:)),
 			keyEquivalent: "")
 		let config_item = NSMenuItem()

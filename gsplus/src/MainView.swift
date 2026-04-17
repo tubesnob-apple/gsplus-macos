@@ -93,10 +93,17 @@ class MainView: NSView {
 			return
 		}
 		// F8 (keycode 0x64) opens/closes the native debug console.
+		// F4 (keycode 0x76) opens the native Preferences window.
 		// Intercept here so the emulator never sees the keystroke.
 		if keycode == 0x64 {
 			if let appDelegate = NSApp.delegate as? AppDelegate {
 				appDelegate.debugConsole.toggle()
+			}
+			return
+		}
+		if keycode == 0x76 {
+			if let appDelegate = NSApp.delegate as? AppDelegate {
+				appDelegate.settingsWindow.show()
 			}
 			return
 		}
@@ -341,13 +348,10 @@ class MainView: NSView {
 	}
 
 	@objc func do_config(_ : AnyObject) {
-		// Create a "virtual" F4 press
-		//print("do_config")
-		// Create a keydown for the F4 key (keycode:0x76)
-		adb_physical_key_update(kimage_ptr, Int32(0x76), 0, 0);
-
-		// and create a keyup for the F4 key (keycode:0x76)
-		adb_physical_key_update(kimage_ptr, Int32(0x76), 0, 1);
+		// Open the native Preferences window.
+		if let appDelegate = NSApp.delegate as? AppDelegate {
+			appDelegate.settingsWindow.show()
+		}
 	}
 
 	@objc func do_copy_text(_ : AnyObject) {
