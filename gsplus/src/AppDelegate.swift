@@ -268,11 +268,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 		let edit = NSMenu(title: "Edit")
 		edit.addItem(withTitle: "Copy Text Screen",
 			action: #selector(MainView.do_copy_text(_:)),
-			keyEquivalent: "")
+			keyEquivalent: "c")
 		edit.addItem(NSMenuItem.separator())
 		edit.addItem(withTitle: "Paste",
 			action: #selector(MainView.do_paste(_:)),
-			keyEquivalent: "")
+			keyEquivalent: "v")
 		let edit_item = NSMenuItem()
 		edit_item.title = "Edit"
 		edit_item.submenu = edit

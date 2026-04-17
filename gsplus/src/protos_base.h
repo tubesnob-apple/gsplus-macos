@@ -257,6 +257,7 @@ void show_toolset_tables(word32 a2bank, word32 addr);
 word32 debug_getnum(const char **str_ptr);
 char *debug_get_filename(const char **str_ptr);
 void debug_help(const char *str);
+void debug_symbols(const char *str);
 void debug_bp(const char *str);
 void debug_bp_set(const char *str);
 void debug_bp_clear(const char *str);

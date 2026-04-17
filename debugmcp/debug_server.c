@@ -44,6 +44,7 @@
 
 #include "defc.h"       /* includes iwm.h (Disk, Iwm structs) and all typedefs */
 #include "debug_server.h"
+#include "symbols.h"
 
 /* ── Externs from the emulator core ─────────────────────────────────────── */
 extern Engine_reg  engine;
@@ -1198,6 +1199,26 @@ static void cmd_get_wdm_traps(Jb *jb) {
 	jb_cat(jb, "]}");
 }
 
+static void cmd_get_symbols(Jb *jb) {
+	int n = symbols_file_count();
+	jb_printf(jb, "{\"ok\":true,\"count\":%d,\"files\":[", n);
+	for(int i = 0; i < n; i++) {
+		const char *path = "", *target = "";
+		word32 symsig = 0, length = 0;
+		int nsyms = 0;
+		if(symbols_get_file(i, &path, &target, &symsig, &length,
+		                    &nsyms) != 0) continue;
+		if(i > 0) jb_cat(jb, ",");
+		jb_cat(jb, "{\"path\":");      jb_str(jb, path);
+		jb_cat(jb, ",\"target\":");    jb_str(jb, target);
+		jb_printf(jb, ",\"symsig\":\"$%08X\"", symsig);
+		jb_printf(jb, ",\"length\":%u", length);
+		jb_printf(jb, ",\"n_symbols\":%d", nsyms);
+		jb_cat(jb, "}");
+	}
+	jb_cat(jb, "]}");
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
  * Request dispatch
  * ═══════════════════════════════════════════════════════════════════════════ */
@@ -1275,6 +1296,9 @@ static void dispatch(const char *req, Jb *jb) {
 
 	} else if(strcmp(cmd, "get_wdm_traps") == 0) {
 		cmd_get_wdm_traps(jb);
+
+	} else if(strcmp(cmd, "get_symbols") == 0) {
+		cmd_get_symbols(jb);
 
 	} else if(strcmp(cmd, "send_keys") == 0) {
 		char keys[4096];

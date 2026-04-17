@@ -14,6 +14,7 @@
 #include "defc.h"
 
 #include "disas.h"
+#include "symbols.h"
 #include "../../debugmcp/debug_server.h"
 
 #define LINE_SIZE		160		/* Input buffer size */
@@ -447,6 +448,8 @@ Dbg_longcmd g_debug_longcmds[] = {
 	{ "logpc",	debug_logpc,	&g_debug_logpc[0], "Log PC" },
 	{ "iwm",	debug_iwm,	&g_debug_iwm[0], "IWM" },
 	{ "soundfile",	debug_soundfile, 0, "Save sound to a WAV file" },
+	{ "symbols",	debug_symbols,	0,
+				"List indexed .symbols files (target, sig, len, syms, path)" },
 	{ 0, 0, 0, 0 }
 };
 
@@ -1021,6 +1024,13 @@ debug_help(const char *str)
 {
 	dbg_printf("Help:\n");
 	(void)debug_find_cmd_in_table(str, &(g_debug_longcmds[0]), 1);
+}
+
+void
+debug_symbols(const char *str)
+{
+	(void)str;
+	symbols_dump();
 }
 
 void
@@ -2056,6 +2066,11 @@ debug_add_output_line(char *in_str)
 		c = c ^ 0x80;		// Set highbit if not already set
 		out_bptr[i] = c;
 	}
+	// After the copy loop, in_str points at the next source byte. If it
+	// is non-NUL, the source line is longer than 80 chars and the
+	// remainder lands in the next entry — mark this entry as continued
+	// so the debug console can concatenate, not wrap.
+	line_ptr[pos].continues = (*in_str != 0) ? 1 : 0;
 	pos++;
 	g_debug_lines_pos = pos;
 	g_debug_lines_total++;		// For updating the window

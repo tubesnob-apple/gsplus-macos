@@ -45,13 +45,14 @@ class MainView: NSView {
 		let keycode = event.keyCode
 		let is_repeat = event.isARepeat
 		let unicode_key = get_unicode_key_from_event(event)
-		// print(".performKeyEquiv keycode: \(keycode), is_repeat: " +
-		//					"\(is_repeat)")
 		if(((current_flags & is_cmd) == 0) || is_repeat) {
-			// If CMD isn't being held down, just ignore this
 			return false
 		}
-		// Otherwise, manually do down, then up, for this key
+		// Let Cmd+C / Cmd+V fall through to the Edit menu
+		if let chars = event.charactersIgnoringModifiers,
+		   (chars == "c" || chars == "v") {
+			return false
+		}
 		adb_physical_key_update(kimage_ptr, Int32(keycode),
 			UInt32(unicode_key), 0);
 		adb_physical_key_update(kimage_ptr, Int32(keycode),

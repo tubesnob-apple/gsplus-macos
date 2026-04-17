@@ -14,6 +14,7 @@
 #include "defc.h"
 #include <stdarg.h>
 #include "config.h"
+#include "symbols.h"
 
 #ifdef _WIN32
 # include "win_dirent.h"
@@ -134,6 +135,7 @@ char *g_cfg_charrom_path = "Undefined";		// config_init_menus will malloc
 int g_cfg_charrom_pos = 0;
 char *g_cfg_file_def_name = "Undefined";
 char **g_cfg_file_strptr = 0;
+int g_cfg_file_select_dir = 0;		// 1 = picker commits a directory
 int g_cfg_file_min_size = 1024;
 int g_cfg_file_max_size = 2047*1024*1024;
 int	g_cfg_edit_type = 0;
@@ -370,7 +372,7 @@ Cfg_menu g_cfg_main_menu[] = {
 		KNMP(g_user_page2_shadow), CFGTYPE_INT },
 { "Swap Command/Option keys,0,Disabled,1,Swapped",
 				KNMP(g_adb_swap_command_option), CFGTYPE_INT },
-{ "Symbols Path", KNMP(g_cfg_symbols_path), CFGTYPE_FILE },
+{ "Symbols Path", KNMP(g_cfg_symbols_path), CFGTYPE_DIR },
 { "", 0, 0, 0, 0 },
 { "Save changes to config.kegs", (void *)config_write_config_kegs_file, 0, 0,
 		CFGTYPE_FUNC },
@@ -597,6 +599,7 @@ config_init_menus(Cfg_menu *menuptr)
 				break;
 			case CFGTYPE_FILE:
 			case CFGTYPE_STR:
+			case CFGTYPE_DIR:
 				str_ptr = (char **)menuptr->ptr;
 				str = *str_ptr;
 				// We need to malloc this string since all
@@ -1005,6 +1008,10 @@ cfg_file_update_ptr(char **strptr, const char *str, int need_update)
 	if(strptr == &(g_cfg_charrom_path)) {
 		printf("Updated Char ROM file\n");
 		cfg_load_charrom();
+	}
+	if(strptr == &(g_cfg_symbols_path)) {
+		printf("Updated Symbols Path\n");
+		symbols_rescan();
 	}
 	for(i = 0; i < 2; i++) {
 		remote_changed = 0;
@@ -1502,6 +1509,7 @@ cfg_parse_one_line(char *buf, int line)
 		break;
 	case CFGTYPE_FILE:
 	case CFGTYPE_STR:
+	case CFGTYPE_DIR:
 		cfg_file_update_ptr(menuptr->ptr, &buf[pos], 0);
 		break;
 	default:
@@ -1713,7 +1721,8 @@ config_write_config_kegs_file(int get_status)
 								curval);
 			}
 		}
-		if((type == CFGTYPE_FILE) || (type == CFGTYPE_STR)) {
+		if((type == CFGTYPE_FILE) || (type == CFGTYPE_STR) ||
+						(type == CFGTYPE_DIR)) {
 			curstr = *((char **)menuptr->ptr);
 			defstr = *((char **)menuptr->defptr);
 			if(strcmp(curstr, defstr) != 0) {
@@ -2897,7 +2906,8 @@ cfg_parse_menu(Cfg_menu *menuptr, int menu_pos, int highlight_pos, int change)
 		}
 	}
 
-	if((type == CFGTYPE_FILE) || (type == CFGTYPE_STR)) {
+	if((type == CFGTYPE_FILE) || (type == CFGTYPE_STR) ||
+						(type == CFGTYPE_DIR)) {
 		str_ptr = (char **)menuptr->ptr;
 		curstr = *str_ptr;
 		str_ptr = (char **)menuptr->defptr;
@@ -3004,7 +3014,7 @@ cfg_parse_menu(Cfg_menu *menuptr, int menu_pos, int highlight_pos, int change)
 	str = 0;
 	opt_num = -1;
 	if((type == CFGTYPE_INT) || (type == CFGTYPE_FILE) ||
-						(type == CFGTYPE_STR)) {
+				(type == CFGTYPE_STR) || (type == CFGTYPE_DIR)) {
 		g_cfg_opt_buf[bufpos++] = ' ';
 		g_cfg_opt_buf[bufpos++] = '=';
 		g_cfg_opt_buf[bufpos++] = ' ';
@@ -3059,7 +3069,8 @@ cfg_parse_menu(Cfg_menu *menuptr, int menu_pos, int highlight_pos, int change)
 			str = &(g_cfg_opts_str[0]);
 			(void)cfg_get_disk_name(str, CFG_PATH_MAX, type_ext, 1);
 			str = cfg_shorten_filename(str, 68);
-		} else if ((type == CFGTYPE_FILE) || (type == CFGTYPE_STR)) {
+		} else if ((type == CFGTYPE_FILE) || (type == CFGTYPE_STR) ||
+						(type == CFGTYPE_DIR)) {
 			str = cfg_shorten_filename(curstr, 68);
 		} else if(type == CFGTYPE_FUNC) {
 			fn_ptr = (char *(*)(int))menuptr->ptr;
@@ -4162,11 +4173,28 @@ cfg_file_selected()
 			printf("stat %s returned %d, errno: %d\n",
 					&g_cfg_file_path[0], ret, stat_errno);
 		}
+	} else if((fmt == S_IFDIR) && g_cfg_file_select_dir &&
+						g_cfg_file_pathfield) {
+		/* Dir-select mode: commit the current Path as the chosen
+		 * directory. Normal arrow-Return on a dir still drills in;
+		 * the user tabs to the Path field and hits Return to commit.
+		 *
+		 * The picker builds paths relative to the process cwd, so
+		 * resolve to absolute via realpath() before saving — otherwise
+		 * the value written to config.kegs depends on where the app
+		 * was launched from. */
+		char *abs = realpath(&g_cfg_file_path[0], NULL);
+		cfg_file_update_ptr(g_cfg_file_strptr,
+		                    abs ? abs : &g_cfg_file_path[0], 1);
+		free(abs);
+		g_cfg_slotdrive = 0;
+		g_cfg_file_select_dir = 0;
+		g_cfg_newdisk_select = 0;
 	} else if(fmt == S_IFDIR) {
 		/* it's a directory */
 		cfg_strncpy(&g_cfg_file_curpath[0], &g_cfg_file_path[0],
 								CFG_PATH_MAX);
-	} else if(g_cfg_newdisk_select) {
+	} else if(g_cfg_newdisk_select || g_cfg_file_select_dir) {
 		// Do not allow selecting files, just ignore it
 	} else if((g_cfg_slotdrive & 0xfff) < 0xfff) {
 		/* select it */
@@ -4234,6 +4262,7 @@ cfg_file_handle_key(int key)
 		g_cfg_select_partition = -1;
 		g_cfg_dirlist.invalid = 1;
 		g_cfg_newdisk_select = 0;
+		g_cfg_file_select_dir = 0;
 		break;
 	case 0x0a:	/* down arrow */
 		if(g_cfg_file_pathfield == 0) {
@@ -4540,6 +4569,14 @@ cfg_control_panel_update1()
 				break;
 			case CFGTYPE_FILE:
 				g_cfg_slotdrive = 0xfff;
+				g_cfg_file_select_dir = 0;
+				g_cfg_file_def_name = *((char **)ptr);
+				g_cfg_file_strptr = (char **)ptr;
+				cfg_file_init();
+				break;
+			case CFGTYPE_DIR:
+				g_cfg_slotdrive = 0xfff;
+				g_cfg_file_select_dir = 1;
 				g_cfg_file_def_name = *((char **)ptr);
 				g_cfg_file_strptr = (char **)ptr;
 				cfg_file_init();

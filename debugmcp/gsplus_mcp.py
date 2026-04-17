@@ -42,12 +42,13 @@ GSplus emulates the 65816 CPU, all IIgs graphics/sound modes, ProDOS disk I/O,
 and serial ports. The emulator is running independently; you connect to it
 on demand through a Unix domain socket at /tmp/gsplus_debug.sock.
 
-## Address format
-All 65816 addresses are 24-bit: bank byte + 16-bit offset.
-Tools accept addresses as:
-  - "BB/OOOO"  bank/offset hex string  e.g. "01/2000"
-  - 0xBBOOOO   integer                 e.g. 0x012000
+## Numeric format
+All numeric parameters (addresses, lengths, counts) accept:
   - decimal integer                    e.g. 73728
+  - 0x hex                             e.g. 0x012000
+  - $ hex (65816 convention)           e.g. $012000
+Addresses additionally accept:
+  - "BB/OOOO"  bank/offset hex string  e.g. "01/2000" or "$01/$2000"
 
 ## Available tools and when to use them
 
@@ -206,15 +207,39 @@ def _hex_dump(raw: bytes, base_addr: int) -> str:
     return "\n".join(lines)
 
 
+def _parse_int(val, default=None) -> int:
+    """Accept int, decimal str, $hex, or 0x hex."""
+    if val is None:
+        if default is not None:
+            return default
+        raise ValueError("missing required integer value")
+    if isinstance(val, int):
+        return val
+    s = str(val).strip().strip('"').strip("'")
+    if s.startswith('$'):
+        return int(s[1:], 16)
+    return int(s, 0)
+
+
+def _parse_hex(s: str) -> int:
+    """Parse a hex string, tolerating optional $ or 0x prefix."""
+    s = s.strip()
+    if s.startswith('$'):
+        s = s[1:]
+    elif s.startswith(('0x', '0X')):
+        s = s[2:]
+    return int(s, 16)
+
+
 def _parse_addr(addr) -> int:
-    """Accept int, decimal str, 0x hex str, or 'BB/OOOO' bank/offset."""
+    """Accept int, decimal str, $hex, 0x hex, or 'BB/OOOO' bank/offset."""
     if isinstance(addr, int):
         return addr
     addr = str(addr).strip().strip('"').strip("'")
     if "/" in addr:
         bank, off = addr.split("/", 1)
-        return (int(bank, 16) << 16) | int(off, 16)
-    return int(addr, 0)
+        return (_parse_hex(bank) << 16) | _parse_hex(off)
+    return _parse_int(addr)
 
 
 def _tree_summary(files: list, prefix: str = "") -> list[str]:
@@ -257,12 +282,12 @@ TOOLS: list[types.Tool] = [
             "type": "object",
             "properties": {
                 "addr": {
-                    "description": "Start address (e.g. 0xE10000, '01/2000', 8192)",
+                    "description": "Start address (e.g. $E10000, 0xE10000, '01/2000', 8192)",
                     "oneOf": [{"type": "integer"}, {"type": "string"}],
                 },
                 "len": {
-                    "type": "integer",
-                    "description": "Bytes to read (1–65536, default 256)",
+                    "description": "Bytes to read (1–65536, default 256). Accepts decimal, $hex, or 0x hex.",
+                    "oneOf": [{"type": "integer"}, {"type": "string"}],
                     "default": 256,
                 },
             },
@@ -509,8 +534,8 @@ TOOLS: list[types.Tool] = [
             "type": "object",
             "properties": {
                 "lines": {
-                    "type": "integer",
-                    "description": "Number of lines to return (1–1000, default 50)",
+                    "description": "Number of lines to return (1–1000, default 50). Accepts decimal, $hex, or 0x hex.",
+                    "oneOf": [{"type": "integer"}, {"type": "string"}],
                     "default": 50,
                 },
             },
@@ -529,7 +554,7 @@ TOOLS: list[types.Tool] = [
             "type": "object",
             "properties": {
                 "addr": {
-                    "description": "Start address (e.g. 0x08EEE9, '00/0300', 8192)",
+                    "description": "Start address (e.g. $08EEE9, 0x08EEE9, '00/0300', 8192)",
                     "oneOf": [{"type": "integer"}, {"type": "string"}],
                 },
                 "data": {
@@ -554,7 +579,7 @@ TOOLS: list[types.Tool] = [
             "type": "object",
             "properties": {
                 "addr": {
-                    "description": "24-bit address to break on (e.g. 0x00C600, '00/c600')",
+                    "description": "24-bit address to break on (e.g. $00C600, 0x00C600, '00/c600')",
                     "oneOf": [{"type": "integer"}, {"type": "string"}],
                 },
                 "timeout_s": {
@@ -586,8 +611,8 @@ TOOLS: list[types.Tool] = [
             "properties": {
                 "trap": {
                     "description": (
-                        "Which trap(s) to change. Accepts: a single integer (e.g. 1), "
-                        "a comma-separated list of integers (e.g. \"1, 2, 5\"), "
+                        "Which trap(s) to change. Accepts: a single integer (e.g. 1, $0F, 0x0F), "
+                        "a comma-separated list (e.g. \"1, 2, $0F\"), "
                         "a bracketed list (e.g. \"[1, 2, 5]\"), "
                         "or the string \"all\"."
                     ),
@@ -608,6 +633,19 @@ TOOLS: list[types.Tool] = [
             "Return the enabled/disabled state of all 128 WDM trap slots ($00–$7F). "
             "Returns a 128-element array of 0/1 values indexed by operand. "
             "Index 0 is always 0 (WDM $00 never halts)."
+        ),
+        inputSchema={"type": "object", "properties": {}, "required": []},
+    ),
+    types.Tool(
+        name="get_symbols",
+        description=(
+            "List the ORCA linker .symbols files currently indexed by the emulator. "
+            "The emulator scans the 'Symbols Path' config directory (recursively) on "
+            "reset and whenever the path changes; each .symbols file is indexed by its "
+            "32-bit 'symsig' so a WDM $0F prologue at segment load time can bind the "
+            "correct symbol table to the runtime load base. Returns 'count' and a "
+            "'files' array of {path, target, symsig, length, n_symbols} — use it to "
+            "confirm the emulator has picked up the symbol files you expect."
         ),
         inputSchema={"type": "object", "properties": {}, "required": []},
     ),
@@ -774,7 +812,7 @@ async def call_tool(name: str, arguments: dict[str, Any]) -> list[types.TextCont
         addr_int = _parse_addr(addr_raw)
         result = _send({"cmd": "read_memory",
                         "addr": addr_int,
-                        "len": arguments.get("len", 256)})
+                        "len": _parse_int(arguments.get("len"), 256)})
         if result.get("ok") and "data_b64" in result:
             raw = _b64decode(result["data_b64"])
             result["hex_dump"] = _hex_dump(raw, addr_int)
@@ -845,7 +883,7 @@ async def call_tool(name: str, arguments: dict[str, Any]) -> list[types.TextCont
         return text(_fmt(result))
 
     elif name == "get_log":
-        result = _send({"cmd": "get_log", "lines": arguments.get("lines", 50)})
+        result = _send({"cmd": "get_log", "lines": _parse_int(arguments.get("lines"), 50)})
         if result.get("ok") and "log" in result:
             return text(result["log"])
         return text(_fmt(result))
@@ -944,7 +982,7 @@ async def call_tool(name: str, arguments: dict[str, Any]) -> list[types.TextCont
                 page        = 1
                 page_source = "fallback"
         else:
-            page        = int(page_arg)
+            page        = _parse_int(page_arg)
             page_source = "caller"
 
         width = 80 if col80 else 40
@@ -1083,11 +1121,11 @@ async def call_tool(name: str, arguments: dict[str, Any]) -> list[types.TextCont
             if s.lower() == "all":
                 payload = "all"
             elif "," in s:
-                payload = [int(x.strip()) for x in s.split(",") if x.strip()]
+                payload = [_parse_int(x.strip()) for x in s.split(",") if x.strip()]
             else:
-                payload = int(s)   # single number as string
+                payload = _parse_int(s)
         else:
-            payload = int(trap_raw)
+            payload = _parse_int(trap_raw)
         return text(_fmt(_send({
             "cmd":     "set_wdm_trap",
             "trap":    payload,
@@ -1096,6 +1134,9 @@ async def call_tool(name: str, arguments: dict[str, Any]) -> list[types.TextCont
 
     elif name == "get_wdm_traps":
         return text(_fmt(_send({"cmd": "get_wdm_traps"})))
+
+    elif name == "get_symbols":
+        return text(_fmt(_send({"cmd": "get_symbols"})))
 
     elif name == "send_keys":
         raw = arguments["keys"]

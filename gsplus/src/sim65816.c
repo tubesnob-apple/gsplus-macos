@@ -422,6 +422,11 @@ do_reset()
 	engine.kpc = get_memory16_c(0x00fffc);
 
 	g_stepping = 0;
+
+	/* Re-index .symbols files so any files added/removed since the last
+	 * reset take effect. Must happen after config_init() has populated
+	 * g_cfg_symbols_path (true on first call from kegs_init). */
+	symbols_rescan();
 }
 
 #define CHECK(start, var, value, var1, var2)				\
@@ -1972,20 +1977,22 @@ do_dbg(word32 arg)
 	}
 
 	if(slot_arg == 0x0f) {
-		/* WDM $0F: segment-loaded beacon. Convention: caller pushes
-		 * the long address of a gsplus_seg_desc via two PEAs:
-		 *     pea  desc>>16   ; pushes 0, bank
-		 *     pea  desc       ; pushes addr_hi, addr_lo
-		 *     wdm  $0f
-		 *     pla
-		 *     pla
-		 * After WDM, top-of-stack bytes (low->high) are:
-		 *   (S+1)=addr_lo (S+2)=addr_hi (S+3)=bank (S+4)=0 */
-		word32 sp = engine.stack;
-		word32 lo = get_memory_c((sp + 1) & 0xffff) & 0xff;
-		word32 mi = get_memory_c((sp + 2) & 0xffff) & 0xff;
-		word32 hi = get_memory_c((sp + 3) & 0xffff) & 0xff;
-		symbols_register_from_desc(lo | (mi << 8) | (hi << 16));
+		/* WDM $0F: segment-loaded beacon from the linker-injected
+		 * prologue at offset 0 of segment 1:
+		 *     +0  $42 $0F   WDM $0F      ; this instruction
+		 *     +2  $80 $04   BRA +4       ; skips the 4 signature bytes
+		 *     +4  <sig>     32-bit symsig, little-endian
+		 * The WDM instruction's address (kpc - 2) is the segment's
+		 * runtime load base. The 4 bytes at kpc+2 are the symsig we
+		 * match against the preloaded .symbols index. */
+		word32 load_base = (engine.kpc - 2) & 0xffffff;
+		word32 sig_addr  = (engine.kpc + 2) & 0xffffff;
+		word32 b0 = get_memory_c((sig_addr + 0) & 0xffffff) & 0xff;
+		word32 b1 = get_memory_c((sig_addr + 1) & 0xffffff) & 0xff;
+		word32 b2 = get_memory_c((sig_addr + 2) & 0xffffff) & 0xff;
+		word32 b3 = get_memory_c((sig_addr + 3) & 0xffffff) & 0xff;
+		word32 symsig = b0 | (b1 << 8) | (b2 << 16) | (b3 << 24);
+		symbols_register_from_sig(load_base, symsig);
 		return;
 	}
 

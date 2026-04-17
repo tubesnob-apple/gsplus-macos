@@ -447,7 +447,9 @@ class DebugConsoleWindowController {
     }
 
     // Collects `count` most-recently-written ring-buffer lines, oldest first.
-    // Returns a single newline-terminated string ready to insert.
+    // Entries with continues=1 are joined to the following entry (without a
+    // newline between them) so logical lines longer than 80 chars aren't
+    // wrapped in the console. Returns a single newline-terminated string.
     private func collectLines(count: Int, writePos: Int, alloc: Int) -> String {
         guard count > 0,
               let ptr = g_debug_lines_ptr,
@@ -457,14 +459,23 @@ class DebugConsoleWindowController {
             var idx = writePos - 1 - back
             if idx < 0 { idx += alloc }
             guard idx >= 0 && idx < alloc else { continue }
-            out += decodeLine(ptr.advanced(by: idx)) + "\n"
+            let entry = ptr.advanced(by: idx)
+            if entry.pointee.continues != 0 {
+                // Continuation: keep all 80 chars (trailing padding unlikely
+                // since the entry is full), no newline yet.
+                out += decodeEntryRaw(entry, trimTrailingSpaces: false)
+            } else {
+                out += decodeEntryRaw(entry, trimTrailingSpaces: true) + "\n"
+            }
         }
         return out
     }
 
     // Decodes one 80-byte Apple II ring-buffer entry to a plain String.
-    // Bytes are stored XOR'd with 0x80; undo that and trim trailing spaces.
-    private func decodeLine(_ entry: UnsafeMutablePointer<Debug_entry>) -> String {
+    // Bytes are stored XOR'd with 0x80; undo that and optionally trim
+    // trailing spaces (only for terminal entries of a logical line).
+    private func decodeEntryRaw(_ entry: UnsafeMutablePointer<Debug_entry>,
+                                trimTrailingSpaces: Bool) -> String {
         let maxChars = Int(DEBUG_ENTRY_MAX_CHARS)
         var bytes    = [UInt8](repeating: 0x20, count: maxChars)
         withUnsafeBytes(of: &entry.pointee.str_buf) { raw in
@@ -474,7 +485,9 @@ class DebugConsoleWindowController {
             }
         }
         var end = maxChars
-        while end > 0 && bytes[end - 1] == 0x20 { end -= 1 }
+        if trimTrailingSpaces {
+            while end > 0 && bytes[end - 1] == 0x20 { end -= 1 }
+        }
         return String(bytes: bytes.prefix(end), encoding: .ascii) ?? ""
     }
 }

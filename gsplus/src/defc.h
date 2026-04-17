@@ -180,6 +180,11 @@ STRUCT(Kimage) {
 
 STRUCT(Debug_entry) {
 	byte str_buf[DEBUG_ENTRY_MAX_CHARS];
+	byte continues;   /* 1 = entry holds exactly 80 chars and more follow;
+	                     the debug console joins this entry with the next
+	                     instead of wrapping to a new line. 0 = end of a
+	                     logical line. */
+	byte _pad[3];     /* keep the struct size aligned on 4 */
 };
 
 extern Debug_entry *g_debug_lines_ptr;
