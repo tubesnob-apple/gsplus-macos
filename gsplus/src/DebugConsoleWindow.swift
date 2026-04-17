@@ -166,16 +166,24 @@ class DebugConsoleWindowController {
         }
     }
 
+    // Flipped by installInView() so updateIfNeeded doesn't try to spin
+    // up a standalone window for the embedded instance.
+    private var embedded: Bool = false
+
     // Called every emulator tick — splices any new ring-buffer lines in
-    // above the current prompt.  Also auto-opens on emulator halt.
+    // above the current prompt.  For the standalone controller this
+    // also auto-opens the window on emulator halt.
     func updateIfNeeded() {
-        if !isOpen && g_halt_sim > 0 {
+        if !embedded && !isOpen && g_halt_sim > 0 {
             if window == nil { createWindow() }
             syncAllLines()
             window?.makeKeyAndOrderFront(nil)
             window?.makeFirstResponder(textView)
         }
-        guard isOpen else { return }
+        // Must be installed (window open OR embedded); otherwise nothing
+        // to splice into.
+        if !embedded && !isOpen { return }
+        if !isInstalled { return }
         let current = Int(g_debug_lines_total)
         guard current != lastSeenTotal else { return }
         let pos   = Int(g_debug_lines_pos)
@@ -311,9 +319,28 @@ class DebugConsoleWindowController {
         window = w
     }
 
+    /// Install the console's scrollView + text view directly into any
+    /// parent NSView (e.g. a panel embedded inside another window). The
+    /// ring-buffer updater (updateIfNeeded) still works against the
+    /// shared emulator state. Also replays existing history on install.
+    func installInView(_ parent: NSView) {
+        embedded = true
+        buildLayout(in: parent)
+        syncAllLines()
+    }
+
+    /// True when this controller has been installed somewhere — either
+    /// via the standalone window being visible, or via installInView.
+    var isInstalled: Bool {
+        return textView != nil
+    }
+
     private func buildLayout(in w: NSWindow) {
         guard let content = w.contentView else { return }
+        buildLayout(in: content)
+    }
 
+    private func buildLayout(in content: NSView) {
         let sv = NSScrollView(frame: content.bounds)
         sv.autoresizingMask      = [.width, .height]
         sv.hasVerticalScroller   = true

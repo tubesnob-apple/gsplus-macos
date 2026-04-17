@@ -93,10 +93,17 @@ class MainView: NSView {
 			return
 		}
 		// F8 (keycode 0x64) opens/closes the native debug console.
+		// F9 (keycode 0x65) opens/closes the native Debugger Tracer.
 		// Intercept here so the emulator never sees the keystroke.
 		if keycode == 0x64 {
 			if let appDelegate = NSApp.delegate as? AppDelegate {
 				appDelegate.debugConsole.toggle()
+			}
+			return
+		}
+		if keycode == 0x65 {
+			if let appDelegate = NSApp.delegate as? AppDelegate {
+				appDelegate.tracerWindow.toggle()
 			}
 			return
 		}

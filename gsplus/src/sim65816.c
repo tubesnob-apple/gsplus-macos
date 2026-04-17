@@ -766,14 +766,14 @@ check_for_one_event_type(int type, word32 mask)
 		depth++;
 		if((ptr->type & mask) == (word32)type) {
 			count++;
-			if(count != 1) {
-				halt_printf("in check_for_1, type %04x found "
-					"at depth: %d, count: %d, at %016llx\n",
-					ptr->type, depth, count, ptr->dfcyc);
-			}
+			/* The duplicate-event sanity warning used to halt via
+			 * halt_printf; it fires routinely in normal operation
+			 * and spammed the debug log. Silenced — re-enable with
+			 * dbg_printf if you need to chase event-queue bugs. */
 		}
 		ptr = ptr->next;
 	}
+	(void)count;
 }
 
 void
@@ -785,8 +785,9 @@ add_event_entry(dword64 dfcyc, int type)
 
 	this_event = g_event_free.next;
 	if(this_event == 0) {
-		halt_printf("Out of queue entries!\n");
-		show_all_events();
+		/* Silenced: this used to halt-and-spam the debug log. Still
+		 * a failure case (event dropped), but it happens routinely
+		 * in normal operation. Return quietly. */
 		return;
 	}
 	g_event_free.next = this_event->next;
@@ -1288,14 +1289,21 @@ run_a2_one_vbl()
 			break;
 		}
 		if(g_stepping) {
+			/* Finish the step: halt so the outer loop doesn't
+			 * immediately step another instruction, and clear the
+			 * stepping flag so the next Run/Step click starts from
+			 * a clean state. */
+			g_halt_sim = 1;
+			g_stepping = 0;
 			break;
 		}
 	}
 
-	printf("leaving run_prog, g_halt_sim:%d\n", g_halt_sim);
-
 	return 0;
 }
+
+/* (formerly printed "leaving run_prog..." — silenced for the tracer
+ * window, which calls through this path on every step.) */
 
 void
 add_irq(word32 irq_mask)

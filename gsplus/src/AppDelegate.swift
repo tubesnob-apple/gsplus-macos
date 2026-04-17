@@ -156,12 +156,19 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 	var mainwin_info = Window_info();
 	var debugwin_info = Window_info();
 	var debugConsole  = DebugConsoleWindowController()
+	var tracerWindow  = TracerWindowController()
 
 	func find_win_info(_ window: NSWindow) -> Window_info {
 		if(mainwin_info.x_win == window) {
 			return mainwin_info
 		}
 		return debugwin_info
+	}
+	@objc func do_tracer(_:AnyObject) {
+		tracerWindow.toggle()
+	}
+	@objc func do_debug_console(_:AnyObject) {
+		debugConsole.toggle()
 	}
 	@objc func do_about(_:AnyObject) {
 		print("About")
@@ -287,6 +294,19 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 		config_item.title = "Config"
 		config_item.submenu = config
 		menu.addItem(config_item)
+
+		//   Add "Debug" menu
+		let debug = NSMenu(title: "Debug")
+		debug.addItem(withTitle: "Debugger Tracer  F9",
+			action: #selector(AppDelegate.do_tracer(_:)),
+			keyEquivalent: "")
+		debug.addItem(withTitle: "Debug Console  F8",
+			action: #selector(AppDelegate.do_debug_console(_:)),
+			keyEquivalent: "")
+		let debug_item = NSMenuItem()
+		debug_item.title = "Debug"
+		debug_item.submenu = debug
+		menu.addItem(debug_item)
 
 		show_menu(menu, depth: 0)
 	}

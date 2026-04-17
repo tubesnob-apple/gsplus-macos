@@ -3,3 +3,5 @@
 //
 
 #import "defc.h"
+#import "tracer_bridge.h"
+#import "symbols.h"

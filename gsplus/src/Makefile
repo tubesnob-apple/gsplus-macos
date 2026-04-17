@@ -2,7 +2,7 @@
 
 XOPTS_WIN = -Wall -fomit-frame-pointer -march=pentium
 
-SWIFTOBJS = AppDelegate.o MainView.o DebugConsoleWindow.o
+SWIFTOBJS = AppDelegate.o MainView.o DebugConsoleWindow.o TracerWindow.o
 
 include vars
 include ldvars
@@ -81,17 +81,28 @@ gspluswin.exe: $(OBJECTS) $(OBJECTS1) compile_time.o
 .m.o:
 	$(CC) $(CCOPTS) $(XOPTS) -c $(OPTS) -I. $*.m
 
-AppDelegate.o: AppDelegate.swift
-	sh ./comp_swift -c $(OPTS) -I. -primary-file $*.swift \
-		MainView.swift DebugConsoleWindow.swift -o $*.o
+SWIFTSRCS = AppDelegate.swift MainView.swift DebugConsoleWindow.swift \
+	TracerWindow.swift
 
-MainView.o: MainView.swift
+AppDelegate.o: $(SWIFTSRCS)
 	sh ./comp_swift -c $(OPTS) -I. -primary-file $*.swift \
-		AppDelegate.swift DebugConsoleWindow.swift -o $*.o
+		MainView.swift DebugConsoleWindow.swift TracerWindow.swift \
+		-o $*.o
 
-DebugConsoleWindow.o: DebugConsoleWindow.swift
+MainView.o: $(SWIFTSRCS)
 	sh ./comp_swift -c $(OPTS) -I. -primary-file $*.swift \
-		AppDelegate.swift MainView.swift -o $*.o
+		AppDelegate.swift DebugConsoleWindow.swift TracerWindow.swift \
+		-o $*.o
+
+DebugConsoleWindow.o: $(SWIFTSRCS)
+	sh ./comp_swift -c $(OPTS) -I. -primary-file $*.swift \
+		AppDelegate.swift MainView.swift TracerWindow.swift \
+		-o $*.o
+
+TracerWindow.o: $(SWIFTSRCS)
+	sh ./comp_swift -c $(OPTS) -I. -primary-file $*.swift \
+		AppDelegate.swift MainView.swift DebugConsoleWindow.swift \
+		-o $*.o
 
 debug_server.o: ../../debugmcp/debug_server.c ../../debugmcp/debug_server.h
 	$(CC) $(CCOPTS) $(XOPTS) -c $(OPTS) -I. ../../debugmcp/debug_server.c -o debug_server.o
