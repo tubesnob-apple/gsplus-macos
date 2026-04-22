@@ -1976,6 +1976,17 @@ do_dbg(word32 arg)
 	slot_arg = arg & 0x7f;
 	dbg_kpc = (engine.kpc - 2) & 0xffffff;
 
+	/* Every WDM $00-$7F refreshes the symbol bindings before emitting
+	 * the log line. Throttled so rapid WDM streams don't re-scan RAM
+	 * on every trap. For the historical $0F prologue shape
+	 *     $42 $0F       WDM $0F      ; this instruction
+	 *     $80 $04       BRA +4       ; skips a trailing 4-byte symsig
+	 *     <4 bytes>     symsig
+	 * the BRA still skips the old payload harmlessly — we no longer
+	 * parse it, we just run the scanner, which picks up real footers
+	 * at the ends of loaded code segments instead. */
+	symbols_scan_and_bind_throttled();
+
 	if(slot_arg == 0) {
 		/* WDM $00: just emit the debug string + newline, no adornment,
 		 * no registers, never halts. */
@@ -1985,22 +1996,8 @@ do_dbg(word32 arg)
 	}
 
 	if(slot_arg == 0x0f) {
-		/* WDM $0F: segment-loaded beacon from the linker-injected
-		 * prologue at offset 0 of segment 1:
-		 *     +0  $42 $0F   WDM $0F      ; this instruction
-		 *     +2  $80 $04   BRA +4       ; skips the 4 signature bytes
-		 *     +4  <sig>     32-bit symsig, little-endian
-		 * The WDM instruction's address (kpc - 2) is the segment's
-		 * runtime load base. The 4 bytes at kpc+2 are the symsig we
-		 * match against the preloaded .symbols index. */
-		word32 load_base = (engine.kpc - 2) & 0xffffff;
-		word32 sig_addr  = (engine.kpc + 2) & 0xffffff;
-		word32 b0 = get_memory_c((sig_addr + 0) & 0xffffff) & 0xff;
-		word32 b1 = get_memory_c((sig_addr + 1) & 0xffffff) & 0xff;
-		word32 b2 = get_memory_c((sig_addr + 2) & 0xffffff) & 0xff;
-		word32 b3 = get_memory_c((sig_addr + 3) & 0xffffff) & 0xff;
-		word32 symsig = b0 | (b1 << 8) | (b2 << 16) | (b3 << 24);
-		symbols_register_from_sig(load_base, symsig);
+		/* WDM $0F: bare "scan now" trigger. Nothing else to emit;
+		 * the scan above has already refreshed bindings. */
 		return;
 	}
 

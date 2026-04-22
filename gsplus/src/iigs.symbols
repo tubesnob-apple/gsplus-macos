@@ -1,0 +1,3662 @@
+{
+  "orca_symbols_version": "0x00000001",
+  "symsig": "0x49494753",
+  "target": "iigs",
+  "load_base": "0x000000",
+  "segments": [
+    {
+      "load_base": "0xE00000",
+      "length": "0x010000"
+    },
+    {
+      "load_base": "0xE10000",
+      "length": "0x010000"
+    },
+    {
+      "load_base": "0x000400",
+      "length": "0x000400",
+      "shadow_mask": "0x01",
+      "shadow_value": "0x00"
+    },
+    {
+      "load_base": "0x000800",
+      "length": "0x000400",
+      "shadow_mask": "0x01",
+      "shadow_value": "0x00"
+    },
+    {
+      "load_base": "0x002000",
+      "length": "0x002000",
+      "shadow_mask": "0x02",
+      "shadow_value": "0x00"
+    },
+    {
+      "load_base": "0x004000",
+      "length": "0x002000",
+      "shadow_mask": "0x04",
+      "shadow_value": "0x00"
+    },
+    {
+      "load_base": "0x000000",
+      "length": "0x000400"
+    },
+    {
+      "load_base": "0x00C000",
+      "length": "0x001000",
+      "shadow_mask": "0x40",
+      "shadow_value": "0x00"
+    },
+    {
+      "load_base": "0x00E000",
+      "length": "0x002000",
+      "statereg_mask": "0x02",
+      "statereg_value": "0x00"
+    },
+    {
+      "load_base": "0x01C000",
+      "length": "0x001000",
+      "shadow_mask": "0x40",
+      "shadow_value": "0x00"
+    },
+    {
+      "load_base": "0x012000",
+      "length": "0x008000",
+      "shadow_mask": "0x08",
+      "shadow_value": "0x00"
+    }
+  ],
+  "_comment": [
+    "Default symbol table for Apple IIgs hardware, ROM monitor,",
+    "firmware entry points, and toolbox internals. Shipped with",
+    "GSplus and auto-loaded on reset via the optional load_base",
+    "field (no WDM $0F prologue required).",
+    "",
+    "Visibility is per-segment and can be gated on softswitch state:",
+    "  shadow_mask / shadow_value: predicate on $C035.",
+    "  statereg_mask / statereg_value: predicate on $C068.",
+    "Segment active only when all predicates hold. See symbols.c.",
+    "",
+    "Bank-$E0/$E1 segments are unconditional (the real hardware and",
+    "video memory live there). Bank-$00/$01 segments are aliases",
+    "that only carry hardware meaning when shadowing is enabled",
+    "for that region."
+  ],
+  "symbols": [
+    {
+      "name": "SCRTCH",
+      "offset": "0x000026"
+    },
+    {
+      "name": "TRACK",
+      "offset": "0x000027"
+    },
+    {
+      "name": "CSWL",
+      "offset": "0x000036"
+    },
+    {
+      "name": "CSWH",
+      "offset": "0x000037"
+    },
+    {
+      "name": "KSWL",
+      "offset": "0x000038"
+    },
+    {
+      "name": "KSWH",
+      "offset": "0x000039"
+    },
+    {
+      "name": "VOL",
+      "offset": "0x00003C"
+    },
+    {
+      "name": "TRACK_DISK",
+      "offset": "0x00003D"
+    },
+    {
+      "name": "SECTOR_DISK",
+      "offset": "0x00003E"
+    },
+    {
+      "name": "CHKSUM",
+      "offset": "0x00003F"
+    },
+    {
+      "name": "EnterBASIC",
+      "offset": "0x0003D0"
+    },
+    {
+      "name": "ReconnectDOS",
+      "offset": "0x0003D2"
+    },
+    {
+      "name": "CowSound",
+      "offset": "0x0003D9"
+    },
+    {
+      "name": "ReconnectIO",
+      "offset": "0x0003EA"
+    },
+    {
+      "name": "BRK_SOFT",
+      "offset": "0x0003F0"
+    },
+    {
+      "name": "SOFTEV",
+      "offset": "0x0003F2"
+    },
+    {
+      "name": "PWREDUP",
+      "offset": "0x0003F4"
+    },
+    {
+      "name": "AmpersandVector",
+      "offset": "0x0003F5"
+    },
+    {
+      "name": "CTRL_Y_VEC",
+      "offset": "0x0003F8"
+    },
+    {
+      "name": "NMI_SOFT",
+      "offset": "0x0003FB"
+    },
+    {
+      "name": "IRQ_SOFT",
+      "offset": "0x0003FE"
+    },
+    {
+      "name": "TEXT_PAGE1",
+      "offset": "0x000400"
+    },
+    {
+      "name": "MOUSE_XL",
+      "offset": "0x00047C"
+    },
+    {
+      "name": "MOUSE_XH",
+      "offset": "0x0004FC"
+    },
+    {
+      "name": "MOUSE_YL",
+      "offset": "0x00057C"
+    },
+    {
+      "name": "MOUSE_YH",
+      "offset": "0x0005FC"
+    },
+    {
+      "name": "MOUSE_STATUS",
+      "offset": "0x00067C"
+    },
+    {
+      "name": "MOUSE_MODE",
+      "offset": "0x0006FC"
+    },
+    {
+      "name": "MOUSE_CLMPL",
+      "offset": "0x00077C"
+    },
+    {
+      "name": "MOUSE_CLMPH",
+      "offset": "0x0007FC"
+    },
+    {
+      "name": "TEXT_PAGE2",
+      "offset": "0x000800"
+    },
+    {
+      "name": "HIRES_PAGE1",
+      "offset": "0x002000"
+    },
+    {
+      "name": "HIRES_PAGE2",
+      "offset": "0x004000"
+    },
+    {
+      "name": "KBD/CLR80COL",
+      "offset": "0x00C000"
+    },
+    {
+      "name": "SET80COL",
+      "offset": "0x00C001"
+    },
+    {
+      "name": "RDMAINRAM",
+      "offset": "0x00C002"
+    },
+    {
+      "name": "RDCARDRAM",
+      "offset": "0x00C003"
+    },
+    {
+      "name": "WRMAINRAM",
+      "offset": "0x00C004"
+    },
+    {
+      "name": "WRCARDRAM",
+      "offset": "0x00C005"
+    },
+    {
+      "name": "SETSLOTCXROM",
+      "offset": "0x00C006"
+    },
+    {
+      "name": "SETINTCXROM",
+      "offset": "0x00C007"
+    },
+    {
+      "name": "SETSTDZP",
+      "offset": "0x00C008"
+    },
+    {
+      "name": "SETALTZP",
+      "offset": "0x00C009"
+    },
+    {
+      "name": "SETINTC3ROM",
+      "offset": "0x00C00A"
+    },
+    {
+      "name": "SETSLOTC3ROM",
+      "offset": "0x00C00B"
+    },
+    {
+      "name": "CLR80VID",
+      "offset": "0x00C00C"
+    },
+    {
+      "name": "SET80VID",
+      "offset": "0x00C00D"
+    },
+    {
+      "name": "CLRALTCHAR",
+      "offset": "0x00C00E"
+    },
+    {
+      "name": "SETALTCHAR",
+      "offset": "0x00C00F"
+    },
+    {
+      "name": "KBDSTRB",
+      "offset": "0x00C010"
+    },
+    {
+      "name": "RDLCBNK2",
+      "offset": "0x00C011"
+    },
+    {
+      "name": "RDLCRAM",
+      "offset": "0x00C012"
+    },
+    {
+      "name": "RDRAMRD",
+      "offset": "0x00C013"
+    },
+    {
+      "name": "RDRAMWRT",
+      "offset": "0x00C014"
+    },
+    {
+      "name": "RDCXROM",
+      "offset": "0x00C015"
+    },
+    {
+      "name": "RDALTZP",
+      "offset": "0x00C016"
+    },
+    {
+      "name": "RDC3ROM",
+      "offset": "0x00C017"
+    },
+    {
+      "name": "RD80STORE",
+      "offset": "0x00C018"
+    },
+    {
+      "name": "RDVBLBAR",
+      "offset": "0x00C019"
+    },
+    {
+      "name": "RDTEXT",
+      "offset": "0x00C01A"
+    },
+    {
+      "name": "RDMIX",
+      "offset": "0x00C01B"
+    },
+    {
+      "name": "RDPAGE2",
+      "offset": "0x00C01C"
+    },
+    {
+      "name": "RDHIRES",
+      "offset": "0x00C01D"
+    },
+    {
+      "name": "RDALTCHAR",
+      "offset": "0x00C01E"
+    },
+    {
+      "name": "RD80VID",
+      "offset": "0x00C01F"
+    },
+    {
+      "name": "TAPEOUT",
+      "offset": "0x00C020"
+    },
+    {
+      "name": "MONOCOLOR",
+      "offset": "0x00C021"
+    },
+    {
+      "name": "TBCOLOR",
+      "offset": "0x00C022"
+    },
+    {
+      "name": "VGCINT",
+      "offset": "0x00C023"
+    },
+    {
+      "name": "MOUSEDATA",
+      "offset": "0x00C024"
+    },
+    {
+      "name": "KEYMODREG",
+      "offset": "0x00C025"
+    },
+    {
+      "name": "DATAREG",
+      "offset": "0x00C026"
+    },
+    {
+      "name": "KMSTATUS",
+      "offset": "0x00C027"
+    },
+    {
+      "name": "ROMBANK",
+      "offset": "0x00C028"
+    },
+    {
+      "name": "NEWVIDEO",
+      "offset": "0x00C029"
+    },
+    {
+      "name": "LANGSEL",
+      "offset": "0x00C02B"
+    },
+    {
+      "name": "CHARROM",
+      "offset": "0x00C02C"
+    },
+    {
+      "name": "SLTROMSEL",
+      "offset": "0x00C02D"
+    },
+    {
+      "name": "VERTCNT",
+      "offset": "0x00C02E"
+    },
+    {
+      "name": "HORIZCNT",
+      "offset": "0x00C02F"
+    },
+    {
+      "name": "SPKR",
+      "offset": "0x00C030"
+    },
+    {
+      "name": "DISKREG",
+      "offset": "0x00C031"
+    },
+    {
+      "name": "SCANINT",
+      "offset": "0x00C032"
+    },
+    {
+      "name": "CLOCKDATA",
+      "offset": "0x00C033"
+    },
+    {
+      "name": "CLOCKCTL",
+      "offset": "0x00C034"
+    },
+    {
+      "name": "SHADOW",
+      "offset": "0x00C035"
+    },
+    {
+      "name": "CYAREG",
+      "offset": "0x00C036"
+    },
+    {
+      "name": "DMAREG",
+      "offset": "0x00C037"
+    },
+    {
+      "name": "SCCBREG",
+      "offset": "0x00C038"
+    },
+    {
+      "name": "SCCAREG",
+      "offset": "0x00C039"
+    },
+    {
+      "name": "SCCBDATA",
+      "offset": "0x00C03A"
+    },
+    {
+      "name": "SCCADATA",
+      "offset": "0x00C03B"
+    },
+    {
+      "name": "SOUNDCTL",
+      "offset": "0x00C03C"
+    },
+    {
+      "name": "SOUNDDATA",
+      "offset": "0x00C03D"
+    },
+    {
+      "name": "SOUNDADRL",
+      "offset": "0x00C03E"
+    },
+    {
+      "name": "SOUNDADRH",
+      "offset": "0x00C03F"
+    },
+    {
+      "name": "INTMOUSE",
+      "offset": "0x00C040"
+    },
+    {
+      "name": "INTEN",
+      "offset": "0x00C041"
+    },
+    {
+      "name": "MMDELTAX",
+      "offset": "0x00C044"
+    },
+    {
+      "name": "MMDELTAY",
+      "offset": "0x00C045"
+    },
+    {
+      "name": "INTFLAG/DIAGTYPE",
+      "offset": "0x00C046"
+    },
+    {
+      "name": "CLRVBLINT",
+      "offset": "0x00C047"
+    },
+    {
+      "name": "CLRXYINT",
+      "offset": "0x00C048"
+    },
+    {
+      "name": "EMUBYTE",
+      "offset": "0x00C04F"
+    },
+    {
+      "name": "TXTCLR",
+      "offset": "0x00C050"
+    },
+    {
+      "name": "TXTSET",
+      "offset": "0x00C051"
+    },
+    {
+      "name": "MIXCLR",
+      "offset": "0x00C052"
+    },
+    {
+      "name": "MIXSET",
+      "offset": "0x00C053"
+    },
+    {
+      "name": "TXTPAGE1",
+      "offset": "0x00C054"
+    },
+    {
+      "name": "TXTPAGE2",
+      "offset": "0x00C055"
+    },
+    {
+      "name": "LORES",
+      "offset": "0x00C056"
+    },
+    {
+      "name": "HIRES",
+      "offset": "0x00C057"
+    },
+    {
+      "name": "CLRAN0",
+      "offset": "0x00C058"
+    },
+    {
+      "name": "SETAN0",
+      "offset": "0x00C059"
+    },
+    {
+      "name": "CLRAN1",
+      "offset": "0x00C05A"
+    },
+    {
+      "name": "SETAN1",
+      "offset": "0x00C05B"
+    },
+    {
+      "name": "CLRAN2",
+      "offset": "0x00C05C"
+    },
+    {
+      "name": "SETAN2",
+      "offset": "0x00C05D"
+    },
+    {
+      "name": "DHIRESON",
+      "offset": "0x00C05E"
+    },
+    {
+      "name": "DHIRESOFF",
+      "offset": "0x00C05F"
+    },
+    {
+      "name": "BUTN3",
+      "offset": "0x00C060"
+    },
+    {
+      "name": "BUTN0",
+      "offset": "0x00C061"
+    },
+    {
+      "name": "BUTN1",
+      "offset": "0x00C062"
+    },
+    {
+      "name": "BUTN2",
+      "offset": "0x00C063"
+    },
+    {
+      "name": "PADDL0",
+      "offset": "0x00C064"
+    },
+    {
+      "name": "PADDL1",
+      "offset": "0x00C065"
+    },
+    {
+      "name": "PADDL2",
+      "offset": "0x00C066"
+    },
+    {
+      "name": "PADDL3",
+      "offset": "0x00C067"
+    },
+    {
+      "name": "STATEREG",
+      "offset": "0x00C068"
+    },
+    {
+      "name": "TESTREG",
+      "offset": "0x00C06D"
+    },
+    {
+      "name": "PTRIG",
+      "offset": "0x00C070"
+    },
+    {
+      "name": "BANKSEL",
+      "offset": "0x00C073"
+    },
+    {
+      "name": "IOUDISON",
+      "offset": "0x00C07E"
+    },
+    {
+      "name": "IOUDISOFF",
+      "offset": "0x00C07F"
+    },
+    {
+      "name": "LC_RAM2_RD",
+      "offset": "0x00C080"
+    },
+    {
+      "name": "LC_ROM_WR2",
+      "offset": "0x00C081"
+    },
+    {
+      "name": "LC_ROM_RD2",
+      "offset": "0x00C082"
+    },
+    {
+      "name": "LC_RAM2_WR",
+      "offset": "0x00C083"
+    },
+    {
+      "name": "LC_RAM1_RD",
+      "offset": "0x00C088"
+    },
+    {
+      "name": "LC_ROM_WR1",
+      "offset": "0x00C089"
+    },
+    {
+      "name": "LC_ROM_RD1",
+      "offset": "0x00C08A"
+    },
+    {
+      "name": "LC_RAM1_WR",
+      "offset": "0x00C08B"
+    },
+    {
+      "name": "SLINKY_ADRL",
+      "offset": "0x00C0C0"
+    },
+    {
+      "name": "SLINKY_ADRM",
+      "offset": "0x00C0C1"
+    },
+    {
+      "name": "SLINKY_ADRH",
+      "offset": "0x00C0C2"
+    },
+    {
+      "name": "SLINKY_DATA",
+      "offset": "0x00C0C3"
+    },
+    {
+      "name": "IWM_PH0_OFF",
+      "offset": "0x00C0E0"
+    },
+    {
+      "name": "IWM_PH0_ON",
+      "offset": "0x00C0E1"
+    },
+    {
+      "name": "IWM_PH1_OFF",
+      "offset": "0x00C0E2"
+    },
+    {
+      "name": "IWM_PH1_ON",
+      "offset": "0x00C0E3"
+    },
+    {
+      "name": "IWM_PH2_OFF",
+      "offset": "0x00C0E4"
+    },
+    {
+      "name": "IWM_PH2_ON",
+      "offset": "0x00C0E5"
+    },
+    {
+      "name": "IWM_PH3_OFF",
+      "offset": "0x00C0E6"
+    },
+    {
+      "name": "IWM_PH3_ON",
+      "offset": "0x00C0E7"
+    },
+    {
+      "name": "IWM_MOTOR_OFF",
+      "offset": "0x00C0E8"
+    },
+    {
+      "name": "IWM_MOTOR_ON",
+      "offset": "0x00C0E9"
+    },
+    {
+      "name": "IWM_DRV_SEL0",
+      "offset": "0x00C0EA"
+    },
+    {
+      "name": "IWM_DRV_SEL1",
+      "offset": "0x00C0EB"
+    },
+    {
+      "name": "IWM_Q6L",
+      "offset": "0x00C0EC"
+    },
+    {
+      "name": "IWM_Q6H",
+      "offset": "0x00C0ED"
+    },
+    {
+      "name": "IWM_Q7L",
+      "offset": "0x00C0EE"
+    },
+    {
+      "name": "IWM_Q7H",
+      "offset": "0x00C0EF"
+    },
+    {
+      "name": "SLOT1_SERIAL_FW",
+      "offset": "0x00C100"
+    },
+    {
+      "name": "SLOT2_SERIAL_FW",
+      "offset": "0x00C200"
+    },
+    {
+      "name": "SLOT3_80COL_INIT",
+      "offset": "0x00C300"
+    },
+    {
+      "name": "SLOT3_COUT",
+      "offset": "0x00C305"
+    },
+    {
+      "name": "SLOT3_KEYIN",
+      "offset": "0x00C307"
+    },
+    {
+      "name": "AUXMOVE",
+      "offset": "0x00C311"
+    },
+    {
+      "name": "XFER",
+      "offset": "0x00C314"
+    },
+    {
+      "name": "SLOT3_BASIC_INIT",
+      "offset": "0x00C3EA"
+    },
+    {
+      "name": "SLOT3_DOS_INIT",
+      "offset": "0x00C3F1"
+    },
+    {
+      "name": "SLOT4_MOUSE_FW",
+      "offset": "0x00C400"
+    },
+    {
+      "name": "SETMOUSE",
+      "offset": "0x00C412"
+    },
+    {
+      "name": "SERVEMOUSE",
+      "offset": "0x00C413"
+    },
+    {
+      "name": "READMOUSE",
+      "offset": "0x00C414"
+    },
+    {
+      "name": "CLEARMOUSE",
+      "offset": "0x00C415"
+    },
+    {
+      "name": "POSMOUSE",
+      "offset": "0x00C416"
+    },
+    {
+      "name": "CLAMPMOUSE",
+      "offset": "0x00C417"
+    },
+    {
+      "name": "HOMEMOUSE",
+      "offset": "0x00C418"
+    },
+    {
+      "name": "INITMOUSE",
+      "offset": "0x00C419"
+    },
+    {
+      "name": "SMARTPORT_FW",
+      "offset": "0x00C500"
+    },
+    {
+      "name": "SMARTPORT_ID",
+      "offset": "0x00C5FB"
+    },
+    {
+      "name": "SMARTPORT_ENTRY_OFFSET",
+      "offset": "0x00C5FF"
+    },
+    {
+      "name": "DISKII_BOOT",
+      "offset": "0x00C600"
+    },
+    {
+      "name": "DISKII_READSECT",
+      "offset": "0x00C65C"
+    },
+    {
+      "name": "SLOT7_BOOT",
+      "offset": "0x00C700"
+    },
+    {
+      "name": "SLOT7_ID",
+      "offset": "0x00C7FB"
+    },
+    {
+      "name": "SLOT7_ENTRY_OFFSET",
+      "offset": "0x00C7FF"
+    },
+    {
+      "name": "CLRROM",
+      "offset": "0x00CFFF"
+    },
+    {
+      "name": "NEW",
+      "offset": "0x00E5AD"
+    },
+    {
+      "name": "RESUME",
+      "offset": "0x00F317"
+    },
+    {
+      "name": "HGR",
+      "offset": "0x00F3DE"
+    },
+    {
+      "name": "PLOT",
+      "offset": "0x00F800"
+    },
+    {
+      "name": "PLOT1",
+      "offset": "0x00F80E"
+    },
+    {
+      "name": "HLINE",
+      "offset": "0x00F819"
+    },
+    {
+      "name": "VLINE",
+      "offset": "0x00F828"
+    },
+    {
+      "name": "CLRSCR",
+      "offset": "0x00F832"
+    },
+    {
+      "name": "CLRTOP",
+      "offset": "0x00F836"
+    },
+    {
+      "name": "GBASCALC",
+      "offset": "0x00F847"
+    },
+    {
+      "name": "NXTCOL",
+      "offset": "0x00F85F"
+    },
+    {
+      "name": "SETCOL",
+      "offset": "0x00F864"
+    },
+    {
+      "name": "SCRN",
+      "offset": "0x00F871"
+    },
+    {
+      "name": "INSDS1",
+      "offset": "0x00F88C"
+    },
+    {
+      "name": "INSDS2",
+      "offset": "0x00F88E"
+    },
+    {
+      "name": "GET816LEN",
+      "offset": "0x00F890"
+    },
+    {
+      "name": "INSTDSP",
+      "offset": "0x00F8D0"
+    },
+    {
+      "name": "PRNTYX",
+      "offset": "0x00F940"
+    },
+    {
+      "name": "PRNTAX",
+      "offset": "0x00F941"
+    },
+    {
+      "name": "PRNTX",
+      "offset": "0x00F944"
+    },
+    {
+      "name": "PRBLNK",
+      "offset": "0x00F948"
+    },
+    {
+      "name": "PRBL2",
+      "offset": "0x00F94A"
+    },
+    {
+      "name": "PCADJ",
+      "offset": "0x00F953"
+    },
+    {
+      "name": "TEXT2COPY",
+      "offset": "0x00F962"
+    },
+    {
+      "name": "OLDIRQ",
+      "offset": "0x00FA40"
+    },
+    {
+      "name": "BREAK",
+      "offset": "0x00FA4C"
+    },
+    {
+      "name": "OLDBRK",
+      "offset": "0x00FA59"
+    },
+    {
+      "name": "RESET",
+      "offset": "0x00FA62"
+    },
+    {
+      "name": "PWRUP",
+      "offset": "0x00FAA6"
+    },
+    {
+      "name": "SLOOP",
+      "offset": "0x00FABA"
+    },
+    {
+      "name": "REGDSP",
+      "offset": "0x00FAD7"
+    },
+    {
+      "name": "RTBL",
+      "offset": "0x00FB19"
+    },
+    {
+      "name": "PREAD",
+      "offset": "0x00FB1E"
+    },
+    {
+      "name": "PREAD4",
+      "offset": "0x00FB21"
+    },
+    {
+      "name": "INIT",
+      "offset": "0x00FB2F"
+    },
+    {
+      "name": "SETTXT",
+      "offset": "0x00FB39"
+    },
+    {
+      "name": "SETGR",
+      "offset": "0x00FB40"
+    },
+    {
+      "name": "SETWND",
+      "offset": "0x00FB4B"
+    },
+    {
+      "name": "SETWND2",
+      "offset": "0x00FB51"
+    },
+    {
+      "name": "TABV",
+      "offset": "0x00FB5B"
+    },
+    {
+      "name": "APPLEII",
+      "offset": "0x00FB60"
+    },
+    {
+      "name": "SETPWRC",
+      "offset": "0x00FB6F"
+    },
+    {
+      "name": "VIDWAIT",
+      "offset": "0x00FB78"
+    },
+    {
+      "name": "KBDWAIT",
+      "offset": "0x00FB88"
+    },
+    {
+      "name": "VERSION",
+      "offset": "0x00FBB3"
+    },
+    {
+      "name": "ZIDBYTE2",
+      "offset": "0x00FBBF"
+    },
+    {
+      "name": "ZIDBYTE",
+      "offset": "0x00FBC0"
+    },
+    {
+      "name": "BASCALC",
+      "offset": "0x00FBC1"
+    },
+    {
+      "name": "BELL1",
+      "offset": "0x00FBDD"
+    },
+    {
+      "name": "BELL12",
+      "offset": "0x00FBE2"
+    },
+    {
+      "name": "BELL2",
+      "offset": "0x00FBE4"
+    },
+    {
+      "name": "STORADV",
+      "offset": "0x00FBF0"
+    },
+    {
+      "name": "ADVANCE",
+      "offset": "0x00FBF4"
+    },
+    {
+      "name": "VIDOUT",
+      "offset": "0x00FBFD"
+    },
+    {
+      "name": "BS",
+      "offset": "0x00FC10"
+    },
+    {
+      "name": "UP",
+      "offset": "0x00FC1A"
+    },
+    {
+      "name": "VTAB",
+      "offset": "0x00FC22"
+    },
+    {
+      "name": "VTABZ",
+      "offset": "0x00FC24"
+    },
+    {
+      "name": "ESC",
+      "offset": "0x00FC2C"
+    },
+    {
+      "name": "CLREOP",
+      "offset": "0x00FC42"
+    },
+    {
+      "name": "HOME",
+      "offset": "0x00FC58"
+    },
+    {
+      "name": "CR",
+      "offset": "0x00FC62"
+    },
+    {
+      "name": "LF",
+      "offset": "0x00FC66"
+    },
+    {
+      "name": "SCROLL",
+      "offset": "0x00FC70"
+    },
+    {
+      "name": "CLREOL",
+      "offset": "0x00FC9C"
+    },
+    {
+      "name": "CLREOLZ",
+      "offset": "0x00FC9E"
+    },
+    {
+      "name": "WAIT",
+      "offset": "0x00FCA8"
+    },
+    {
+      "name": "NXTA4",
+      "offset": "0x00FCB4"
+    },
+    {
+      "name": "NXTA1",
+      "offset": "0x00FCBA"
+    },
+    {
+      "name": "HEADR",
+      "offset": "0x00FCC9"
+    },
+    {
+      "name": "RDKEY",
+      "offset": "0x00FD0C"
+    },
+    {
+      "name": "FD10",
+      "offset": "0x00FD10"
+    },
+    {
+      "name": "RDKEY1",
+      "offset": "0x00FD18"
+    },
+    {
+      "name": "KEYIN",
+      "offset": "0x00FD1B"
+    },
+    {
+      "name": "RDCHAR",
+      "offset": "0x00FD35"
+    },
+    {
+      "name": "GETLNZ",
+      "offset": "0x00FD67"
+    },
+    {
+      "name": "GETLN",
+      "offset": "0x00FD6A"
+    },
+    {
+      "name": "GETLN0",
+      "offset": "0x00FD6C"
+    },
+    {
+      "name": "CROUT",
+      "offset": "0x00FD6E"
+    },
+    {
+      "name": "GETLN1",
+      "offset": "0x00FD6F"
+    },
+    {
+      "name": "CROUT1",
+      "offset": "0x00FD8B"
+    },
+    {
+      "name": "PRA1",
+      "offset": "0x00FD92"
+    },
+    {
+      "name": "PRBYTE",
+      "offset": "0x00FDDA"
+    },
+    {
+      "name": "PRHEX",
+      "offset": "0x00FDE3"
+    },
+    {
+      "name": "COUT",
+      "offset": "0x00FDED"
+    },
+    {
+      "name": "COUT1",
+      "offset": "0x00FDF0"
+    },
+    {
+      "name": "COUTZ",
+      "offset": "0x00FDF6"
+    },
+    {
+      "name": "IDROUTINE",
+      "offset": "0x00FE1F"
+    },
+    {
+      "name": "MOVE",
+      "offset": "0x00FE2C"
+    },
+    {
+      "name": "LIST",
+      "offset": "0x00FE5E"
+    },
+    {
+      "name": "INVERSE",
+      "offset": "0x00FE80"
+    },
+    {
+      "name": "NORMAL",
+      "offset": "0x00FE84"
+    },
+    {
+      "name": "SETKBD",
+      "offset": "0x00FE89"
+    },
+    {
+      "name": "INPORT",
+      "offset": "0x00FE8B"
+    },
+    {
+      "name": "SETVID",
+      "offset": "0x00FE93"
+    },
+    {
+      "name": "OUTPORT",
+      "offset": "0x00FE95"
+    },
+    {
+      "name": "GO",
+      "offset": "0x00FEB6"
+    },
+    {
+      "name": "WRITE",
+      "offset": "0x00FECD"
+    },
+    {
+      "name": "READ",
+      "offset": "0x00FEFD"
+    },
+    {
+      "name": "PRERR",
+      "offset": "0x00FF2D"
+    },
+    {
+      "name": "BELL",
+      "offset": "0x00FF3A"
+    },
+    {
+      "name": "RESTORE",
+      "offset": "0x00FF3F"
+    },
+    {
+      "name": "RSTR1",
+      "offset": "0x00FF44"
+    },
+    {
+      "name": "SAVE",
+      "offset": "0x00FF4A"
+    },
+    {
+      "name": "SAV1",
+      "offset": "0x00FF4C"
+    },
+    {
+      "name": "IORTS",
+      "offset": "0x00FF58"
+    },
+    {
+      "name": "OLDRST",
+      "offset": "0x00FF59"
+    },
+    {
+      "name": "MON",
+      "offset": "0x00FF65"
+    },
+    {
+      "name": "MONZ",
+      "offset": "0x00FF69"
+    },
+    {
+      "name": "MONZ2",
+      "offset": "0x00FF6C"
+    },
+    {
+      "name": "MONZ4",
+      "offset": "0x00FF70"
+    },
+    {
+      "name": "DIG",
+      "offset": "0x00FF8A"
+    },
+    {
+      "name": "GETNUM",
+      "offset": "0x00FFA7"
+    },
+    {
+      "name": "NXTCHR",
+      "offset": "0x00FFAD"
+    },
+    {
+      "name": "TOSUB",
+      "offset": "0x00FFBE"
+    },
+    {
+      "name": "ZMODE",
+      "offset": "0x00FFC7"
+    },
+    {
+      "name": "COP_VEC",
+      "offset": "0x00FFE4"
+    },
+    {
+      "name": "BRK_VEC",
+      "offset": "0x00FFE6"
+    },
+    {
+      "name": "ABORT_VEC",
+      "offset": "0x00FFE8"
+    },
+    {
+      "name": "NMI_VEC",
+      "offset": "0x00FFEA"
+    },
+    {
+      "name": "IRQ_VEC",
+      "offset": "0x00FFEE"
+    },
+    {
+      "name": "COP_VEC_EMUL",
+      "offset": "0x00FFF4"
+    },
+    {
+      "name": "ABORT_VEC_EMUL",
+      "offset": "0x00FFF8"
+    },
+    {
+      "name": "NMI_VEC_EMUL",
+      "offset": "0x00FFFA"
+    },
+    {
+      "name": "RESET_VEC_EMUL",
+      "offset": "0x00FFFC"
+    },
+    {
+      "name": "IRQ_VEC_EMUL",
+      "offset": "0x00FFFE"
+    },
+    {
+      "name": "KBD/CLR80COL",
+      "offset": "0x01C000"
+    },
+    {
+      "name": "SET80COL",
+      "offset": "0x01C001"
+    },
+    {
+      "name": "RDMAINRAM",
+      "offset": "0x01C002"
+    },
+    {
+      "name": "RDCARDRAM",
+      "offset": "0x01C003"
+    },
+    {
+      "name": "WRMAINRAM",
+      "offset": "0x01C004"
+    },
+    {
+      "name": "WRCARDRAM",
+      "offset": "0x01C005"
+    },
+    {
+      "name": "SETSLOTCXROM",
+      "offset": "0x01C006"
+    },
+    {
+      "name": "SETINTCXROM",
+      "offset": "0x01C007"
+    },
+    {
+      "name": "SETSTDZP",
+      "offset": "0x01C008"
+    },
+    {
+      "name": "SETALTZP",
+      "offset": "0x01C009"
+    },
+    {
+      "name": "SETINTC3ROM",
+      "offset": "0x01C00A"
+    },
+    {
+      "name": "SETSLOTC3ROM",
+      "offset": "0x01C00B"
+    },
+    {
+      "name": "CLR80VID",
+      "offset": "0x01C00C"
+    },
+    {
+      "name": "SET80VID",
+      "offset": "0x01C00D"
+    },
+    {
+      "name": "CLRALTCHAR",
+      "offset": "0x01C00E"
+    },
+    {
+      "name": "SETALTCHAR",
+      "offset": "0x01C00F"
+    },
+    {
+      "name": "KBDSTRB",
+      "offset": "0x01C010"
+    },
+    {
+      "name": "RDLCBNK2",
+      "offset": "0x01C011"
+    },
+    {
+      "name": "RDLCRAM",
+      "offset": "0x01C012"
+    },
+    {
+      "name": "RDRAMRD",
+      "offset": "0x01C013"
+    },
+    {
+      "name": "RDRAMWRT",
+      "offset": "0x01C014"
+    },
+    {
+      "name": "RDCXROM",
+      "offset": "0x01C015"
+    },
+    {
+      "name": "RDALTZP",
+      "offset": "0x01C016"
+    },
+    {
+      "name": "RDC3ROM",
+      "offset": "0x01C017"
+    },
+    {
+      "name": "RD80STORE",
+      "offset": "0x01C018"
+    },
+    {
+      "name": "RDVBLBAR",
+      "offset": "0x01C019"
+    },
+    {
+      "name": "RDTEXT",
+      "offset": "0x01C01A"
+    },
+    {
+      "name": "RDMIX",
+      "offset": "0x01C01B"
+    },
+    {
+      "name": "RDPAGE2",
+      "offset": "0x01C01C"
+    },
+    {
+      "name": "RDHIRES",
+      "offset": "0x01C01D"
+    },
+    {
+      "name": "RDALTCHAR",
+      "offset": "0x01C01E"
+    },
+    {
+      "name": "RD80VID",
+      "offset": "0x01C01F"
+    },
+    {
+      "name": "TAPEOUT",
+      "offset": "0x01C020"
+    },
+    {
+      "name": "MONOCOLOR",
+      "offset": "0x01C021"
+    },
+    {
+      "name": "TBCOLOR",
+      "offset": "0x01C022"
+    },
+    {
+      "name": "VGCINT",
+      "offset": "0x01C023"
+    },
+    {
+      "name": "MOUSEDATA",
+      "offset": "0x01C024"
+    },
+    {
+      "name": "KEYMODREG",
+      "offset": "0x01C025"
+    },
+    {
+      "name": "DATAREG",
+      "offset": "0x01C026"
+    },
+    {
+      "name": "KMSTATUS",
+      "offset": "0x01C027"
+    },
+    {
+      "name": "ROMBANK",
+      "offset": "0x01C028"
+    },
+    {
+      "name": "NEWVIDEO",
+      "offset": "0x01C029"
+    },
+    {
+      "name": "LANGSEL",
+      "offset": "0x01C02B"
+    },
+    {
+      "name": "CHARROM",
+      "offset": "0x01C02C"
+    },
+    {
+      "name": "SLTROMSEL",
+      "offset": "0x01C02D"
+    },
+    {
+      "name": "VERTCNT",
+      "offset": "0x01C02E"
+    },
+    {
+      "name": "HORIZCNT",
+      "offset": "0x01C02F"
+    },
+    {
+      "name": "SPKR",
+      "offset": "0x01C030"
+    },
+    {
+      "name": "DISKREG",
+      "offset": "0x01C031"
+    },
+    {
+      "name": "SCANINT",
+      "offset": "0x01C032"
+    },
+    {
+      "name": "CLOCKDATA",
+      "offset": "0x01C033"
+    },
+    {
+      "name": "CLOCKCTL",
+      "offset": "0x01C034"
+    },
+    {
+      "name": "SHADOW",
+      "offset": "0x01C035"
+    },
+    {
+      "name": "CYAREG",
+      "offset": "0x01C036"
+    },
+    {
+      "name": "DMAREG",
+      "offset": "0x01C037"
+    },
+    {
+      "name": "SCCBREG",
+      "offset": "0x01C038"
+    },
+    {
+      "name": "SCCAREG",
+      "offset": "0x01C039"
+    },
+    {
+      "name": "SCCBDATA",
+      "offset": "0x01C03A"
+    },
+    {
+      "name": "SCCADATA",
+      "offset": "0x01C03B"
+    },
+    {
+      "name": "SOUNDCTL",
+      "offset": "0x01C03C"
+    },
+    {
+      "name": "SOUNDDATA",
+      "offset": "0x01C03D"
+    },
+    {
+      "name": "SOUNDADRL",
+      "offset": "0x01C03E"
+    },
+    {
+      "name": "SOUNDADRH",
+      "offset": "0x01C03F"
+    },
+    {
+      "name": "INTMOUSE",
+      "offset": "0x01C040"
+    },
+    {
+      "name": "INTEN",
+      "offset": "0x01C041"
+    },
+    {
+      "name": "MMDELTAX",
+      "offset": "0x01C044"
+    },
+    {
+      "name": "MMDELTAY",
+      "offset": "0x01C045"
+    },
+    {
+      "name": "INTFLAG/DIAGTYPE",
+      "offset": "0x01C046"
+    },
+    {
+      "name": "CLRVBLINT",
+      "offset": "0x01C047"
+    },
+    {
+      "name": "CLRXYINT",
+      "offset": "0x01C048"
+    },
+    {
+      "name": "EMUBYTE",
+      "offset": "0x01C04F"
+    },
+    {
+      "name": "TXTCLR",
+      "offset": "0x01C050"
+    },
+    {
+      "name": "TXTSET",
+      "offset": "0x01C051"
+    },
+    {
+      "name": "MIXCLR",
+      "offset": "0x01C052"
+    },
+    {
+      "name": "MIXSET",
+      "offset": "0x01C053"
+    },
+    {
+      "name": "TXTPAGE1",
+      "offset": "0x01C054"
+    },
+    {
+      "name": "TXTPAGE2",
+      "offset": "0x01C055"
+    },
+    {
+      "name": "LORES",
+      "offset": "0x01C056"
+    },
+    {
+      "name": "HIRES",
+      "offset": "0x01C057"
+    },
+    {
+      "name": "CLRAN0",
+      "offset": "0x01C058"
+    },
+    {
+      "name": "SETAN0",
+      "offset": "0x01C059"
+    },
+    {
+      "name": "CLRAN1",
+      "offset": "0x01C05A"
+    },
+    {
+      "name": "SETAN1",
+      "offset": "0x01C05B"
+    },
+    {
+      "name": "CLRAN2",
+      "offset": "0x01C05C"
+    },
+    {
+      "name": "SETAN2",
+      "offset": "0x01C05D"
+    },
+    {
+      "name": "DHIRESON",
+      "offset": "0x01C05E"
+    },
+    {
+      "name": "DHIRESOFF",
+      "offset": "0x01C05F"
+    },
+    {
+      "name": "BUTN3",
+      "offset": "0x01C060"
+    },
+    {
+      "name": "BUTN0",
+      "offset": "0x01C061"
+    },
+    {
+      "name": "BUTN1",
+      "offset": "0x01C062"
+    },
+    {
+      "name": "BUTN2",
+      "offset": "0x01C063"
+    },
+    {
+      "name": "PADDL0",
+      "offset": "0x01C064"
+    },
+    {
+      "name": "PADDL1",
+      "offset": "0x01C065"
+    },
+    {
+      "name": "PADDL2",
+      "offset": "0x01C066"
+    },
+    {
+      "name": "PADDL3",
+      "offset": "0x01C067"
+    },
+    {
+      "name": "STATEREG",
+      "offset": "0x01C068"
+    },
+    {
+      "name": "TESTREG",
+      "offset": "0x01C06D"
+    },
+    {
+      "name": "PTRIG",
+      "offset": "0x01C070"
+    },
+    {
+      "name": "BANKSEL",
+      "offset": "0x01C073"
+    },
+    {
+      "name": "IOUDISON",
+      "offset": "0x01C07E"
+    },
+    {
+      "name": "IOUDISOFF",
+      "offset": "0x01C07F"
+    },
+    {
+      "name": "LC_RAM2_RD",
+      "offset": "0x01C080"
+    },
+    {
+      "name": "LC_ROM_WR2",
+      "offset": "0x01C081"
+    },
+    {
+      "name": "LC_ROM_RD2",
+      "offset": "0x01C082"
+    },
+    {
+      "name": "LC_RAM2_WR",
+      "offset": "0x01C083"
+    },
+    {
+      "name": "LC_RAM1_RD",
+      "offset": "0x01C088"
+    },
+    {
+      "name": "LC_ROM_WR1",
+      "offset": "0x01C089"
+    },
+    {
+      "name": "LC_ROM_RD1",
+      "offset": "0x01C08A"
+    },
+    {
+      "name": "LC_RAM1_WR",
+      "offset": "0x01C08B"
+    },
+    {
+      "name": "SLINKY_ADRL",
+      "offset": "0x01C0C0"
+    },
+    {
+      "name": "SLINKY_ADRM",
+      "offset": "0x01C0C1"
+    },
+    {
+      "name": "SLINKY_ADRH",
+      "offset": "0x01C0C2"
+    },
+    {
+      "name": "SLINKY_DATA",
+      "offset": "0x01C0C3"
+    },
+    {
+      "name": "IWM_PH0_OFF",
+      "offset": "0x01C0E0"
+    },
+    {
+      "name": "IWM_PH0_ON",
+      "offset": "0x01C0E1"
+    },
+    {
+      "name": "IWM_PH1_OFF",
+      "offset": "0x01C0E2"
+    },
+    {
+      "name": "IWM_PH1_ON",
+      "offset": "0x01C0E3"
+    },
+    {
+      "name": "IWM_PH2_OFF",
+      "offset": "0x01C0E4"
+    },
+    {
+      "name": "IWM_PH2_ON",
+      "offset": "0x01C0E5"
+    },
+    {
+      "name": "IWM_PH3_OFF",
+      "offset": "0x01C0E6"
+    },
+    {
+      "name": "IWM_PH3_ON",
+      "offset": "0x01C0E7"
+    },
+    {
+      "name": "IWM_MOTOR_OFF",
+      "offset": "0x01C0E8"
+    },
+    {
+      "name": "IWM_MOTOR_ON",
+      "offset": "0x01C0E9"
+    },
+    {
+      "name": "IWM_DRV_SEL0",
+      "offset": "0x01C0EA"
+    },
+    {
+      "name": "IWM_DRV_SEL1",
+      "offset": "0x01C0EB"
+    },
+    {
+      "name": "IWM_Q6L",
+      "offset": "0x01C0EC"
+    },
+    {
+      "name": "IWM_Q6H",
+      "offset": "0x01C0ED"
+    },
+    {
+      "name": "IWM_Q7L",
+      "offset": "0x01C0EE"
+    },
+    {
+      "name": "IWM_Q7H",
+      "offset": "0x01C0EF"
+    },
+    {
+      "name": "ToSlab",
+      "offset": "0xE01E00"
+    },
+    {
+      "name": "StdText",
+      "offset": "0xE01E04"
+    },
+    {
+      "name": "StdLine",
+      "offset": "0xE01E08"
+    },
+    {
+      "name": "StdRect",
+      "offset": "0xE01E0C"
+    },
+    {
+      "name": "StdRRect",
+      "offset": "0xE01E10"
+    },
+    {
+      "name": "StdOval",
+      "offset": "0xE01E14"
+    },
+    {
+      "name": "StdArc",
+      "offset": "0xE01E18"
+    },
+    {
+      "name": "StdPoly",
+      "offset": "0xE01E1C"
+    },
+    {
+      "name": "StdRgn",
+      "offset": "0xE01E20"
+    },
+    {
+      "name": "StdPixels",
+      "offset": "0xE01E24"
+    },
+    {
+      "name": "StdComment",
+      "offset": "0xE01E28"
+    },
+    {
+      "name": "StdTxMeas",
+      "offset": "0xE01E2C"
+    },
+    {
+      "name": "StdTxBnds",
+      "offset": "0xE01E30"
+    },
+    {
+      "name": "StdGetPic",
+      "offset": "0xE01E34"
+    },
+    {
+      "name": "StdPutPic",
+      "offset": "0xE01E38"
+    },
+    {
+      "name": "PortLoc2ZP",
+      "offset": "0xE01E3C"
+    },
+    {
+      "name": "UserPat2ZP",
+      "offset": "0xE01E40"
+    },
+    {
+      "name": "GetPenPReady",
+      "offset": "0xE01E44"
+    },
+    {
+      "name": "GetBackPReady",
+      "offset": "0xE01E48"
+    },
+    {
+      "name": "Pen2ZP",
+      "offset": "0xE01E4C"
+    },
+    {
+      "name": "Back2ZP",
+      "offset": "0xE01E50"
+    },
+    {
+      "name": "RotatePat",
+      "offset": "0xE01E54"
+    },
+    {
+      "name": "GetMaskReady",
+      "offset": "0xE01E58"
+    },
+    {
+      "name": "Mask2ZP",
+      "offset": "0xE01E5C"
+    },
+    {
+      "name": "ExpandMask",
+      "offset": "0xE01E60"
+    },
+    {
+      "name": "RotateMask",
+      "offset": "0xE01E64"
+    },
+    {
+      "name": "RotateLong",
+      "offset": "0xE01E68"
+    },
+    {
+      "name": "PreDraw",
+      "offset": "0xE01E6C"
+    },
+    {
+      "name": "XSetup",
+      "offset": "0xE01E70"
+    },
+    {
+      "name": "DrawRectB",
+      "offset": "0xE01E74"
+    },
+    {
+      "name": "DrawRect",
+      "offset": "0xE01E78"
+    },
+    {
+      "name": "SliceSetup",
+      "offset": "0xE01E7C"
+    },
+    {
+      "name": "vShiftState",
+      "offset": "0xE01E80"
+    },
+    {
+      "name": "vXShiftStay",
+      "offset": "0xE01E84"
+    },
+    {
+      "name": "vShiftOut",
+      "offset": "0xE01E88"
+    },
+    {
+      "name": "vXShiftOut",
+      "offset": "0xE01E8C"
+    },
+    {
+      "name": "BMakeMinRect",
+      "offset": "0xE01E90"
+    },
+    {
+      "name": "MakeMinRect",
+      "offset": "0xE01E94"
+    },
+    {
+      "name": "ShieldCursor",
+      "offset": "0xE01E98"
+    },
+    {
+      "name": "UnshieldCursor",
+      "offset": "0xE01E9C"
+    },
+    {
+      "name": "SetUpPortRegions",
+      "offset": "0xE01EA0"
+    },
+    {
+      "name": "SetUpScanPtrs",
+      "offset": "0xE01EA4"
+    },
+    {
+      "name": "FreePortRegions",
+      "offset": "0xE01EA8"
+    },
+    {
+      "name": "Free1Region",
+      "offset": "0xE01EAC"
+    },
+    {
+      "name": "Free2Regions",
+      "offset": "0xE01EB0"
+    },
+    {
+      "name": "Free3Regions",
+      "offset": "0xE01EB4"
+    },
+    {
+      "name": "UnlockBufferHandle",
+      "offset": "0xE01EB8"
+    },
+    {
+      "name": "Init1Region",
+      "offset": "0xE01EBC"
+    },
+    {
+      "name": "Init2Regions",
+      "offset": "0xE01EC0"
+    },
+    {
+      "name": "Init3Regions",
+      "offset": "0xE01EC4"
+    },
+    {
+      "name": "Seek1Region",
+      "offset": "0xE01EC8"
+    },
+    {
+      "name": "Seek2Regions",
+      "offset": "0xE01ECC"
+    },
+    {
+      "name": "Seek3Regions",
+      "offset": "0xE01ED0"
+    },
+    {
+      "name": "InitRgn",
+      "offset": "0xE01ED4"
+    },
+    {
+      "name": "SeekRgn",
+      "offset": "0xE01ED8"
+    },
+    {
+      "name": "Join1Buffer",
+      "offset": "0xE01EDC"
+    },
+    {
+      "name": "Join2Buffers",
+      "offset": "0xE01EE0"
+    },
+    {
+      "name": "Join3Buffers",
+      "offset": "0xE01EE4"
+    },
+    {
+      "name": "SetSlabAdr",
+      "offset": "0xE01EE8"
+    },
+    {
+      "name": "SetSliceAdr",
+      "offset": "0xE01EEC"
+    },
+    {
+      "name": "SetStuffAdr",
+      "offset": "0xE01EF0"
+    },
+    {
+      "name": "BlowItUp",
+      "offset": "0xE01EF4"
+    },
+    {
+      "name": "PutPictStuff",
+      "offset": "0xE01EF8"
+    },
+    {
+      "name": "AddToPoly",
+      "offset": "0xE01EFC"
+    },
+    {
+      "name": "GimmeVersion",
+      "offset": "0xE01F14"
+    },
+    {
+      "name": "v_FrRgn",
+      "offset": "0xE01F18"
+    },
+    {
+      "name": "v_PRgn",
+      "offset": "0xE01F1C"
+    },
+    {
+      "name": "v_ERgn",
+      "offset": "0xE01F20"
+    },
+    {
+      "name": "v_IRgn",
+      "offset": "0xE01F24"
+    },
+    {
+      "name": "v_FRgn",
+      "offset": "0xE01F28"
+    },
+    {
+      "name": "v_FrRect",
+      "offset": "0xE01F2C"
+    },
+    {
+      "name": "v_PRect",
+      "offset": "0xE01F30"
+    },
+    {
+      "name": "v_ERect",
+      "offset": "0xE01F34"
+    },
+    {
+      "name": "v_IRect",
+      "offset": "0xE01F38"
+    },
+    {
+      "name": "v_FREct",
+      "offset": "0xE01F3C"
+    },
+    {
+      "name": "DChar",
+      "offset": "0xE01F40"
+    },
+    {
+      "name": "DText",
+      "offset": "0xE01F44"
+    },
+    {
+      "name": "BChar",
+      "offset": "0xE01F48"
+    },
+    {
+      "name": "BText",
+      "offset": "0xE01F4C"
+    },
+    {
+      "name": "ValidChar",
+      "offset": "0xE01F50"
+    },
+    {
+      "name": "GetNextChar",
+      "offset": "0xE01F54"
+    },
+    {
+      "name": "CalcDrawStatus",
+      "offset": "0xE01F58"
+    },
+    {
+      "name": "TextAndMinRect",
+      "offset": "0xE01F5C"
+    },
+    {
+      "name": "CalcTextBounds",
+      "offset": "0xE01F60"
+    },
+    {
+      "name": "SetUpFontInfo",
+      "offset": "0xE01F64"
+    },
+    {
+      "name": "SetUpBufInfo",
+      "offset": "0xE01F68"
+    },
+    {
+      "name": "GetTextHandle",
+      "offset": "0xE01F6C"
+    },
+    {
+      "name": "ClearBufPart",
+      "offset": "0xE01F70"
+    },
+    {
+      "name": "PutChar",
+      "offset": "0xE01F74"
+    },
+    {
+      "name": "BumpPen",
+      "offset": "0xE01F78"
+    },
+    {
+      "name": "CleanUpBuffer",
+      "offset": "0xE01F7C"
+    },
+    {
+      "name": "PutLine",
+      "offset": "0xE01F80"
+    },
+    {
+      "name": "PutRgn",
+      "offset": "0xE01F84"
+    },
+    {
+      "name": "PutRect",
+      "offset": "0xE01F88"
+    },
+    {
+      "name": "CullPoint",
+      "offset": "0xE01F8C"
+    },
+    {
+      "name": "SortPoints",
+      "offset": "0xE01F90"
+    },
+    {
+      "name": "PackRgn",
+      "offset": "0xE01F94"
+    },
+    {
+      "name": "RgnOp",
+      "offset": "0xE01F98"
+    },
+    {
+      "name": "PutOval",
+      "offset": "0xE01F9C"
+    },
+    {
+      "name": "BumpOval",
+      "offset": "0xE01FA0"
+    },
+    {
+      "name": "InitOval",
+      "offset": "0xE01FA4"
+    },
+    {
+      "name": "SetTB",
+      "offset": "0xE01FA8"
+    },
+    {
+      "name": "ResetTB",
+      "offset": "0xE01FAC"
+    },
+    {
+      "name": "StyleText",
+      "offset": "0xE01FB0"
+    },
+    {
+      "name": "StyleExtents",
+      "offset": "0xE01FB4"
+    },
+    {
+      "name": "DoBold",
+      "offset": "0xE01FB8"
+    },
+    {
+      "name": "DoUnderline",
+      "offset": "0xE01FBC"
+    },
+    {
+      "name": "StdConic",
+      "offset": "0xE01FC0"
+    },
+    {
+      "name": "vDrawConic",
+      "offset": "0xE01FC4"
+    },
+    {
+      "name": "vSetScaleAndMap",
+      "offset": "0xE01FC8"
+    },
+    {
+      "name": "DrawCursor",
+      "offset": "0xE01FCC"
+    },
+    {
+      "name": "UndrawCursor",
+      "offset": "0xE01FD0"
+    },
+    {
+      "name": "vAngleFromSlope",
+      "offset": "0xE01FD4"
+    },
+    {
+      "name": "vSlopeFromAngle",
+      "offset": "0xE01FD8"
+    },
+    {
+      "name": "RgnBlt",
+      "offset": "0xE01FDC"
+    },
+    {
+      "name": "SharedMRSetup",
+      "offset": "0xE01FE0"
+    },
+    {
+      "name": "ShareShieldStuff",
+      "offset": "0xE01FE4"
+    },
+    {
+      "name": "GetCharVals",
+      "offset": "0xE01FE8"
+    },
+    {
+      "name": "DoFntFlgMods",
+      "offset": "0xE01FEC"
+    },
+    {
+      "name": "AddExtras",
+      "offset": "0xE01FF0"
+    },
+    {
+      "name": "CalcSlop",
+      "offset": "0xE01FF4"
+    },
+    {
+      "name": "GetFntInf",
+      "offset": "0xE01FF8"
+    },
+    {
+      "name": "KBD/CLR80COL",
+      "offset": "0xE0C000"
+    },
+    {
+      "name": "SET80COL",
+      "offset": "0xE0C001"
+    },
+    {
+      "name": "RDMAINRAM",
+      "offset": "0xE0C002"
+    },
+    {
+      "name": "RDCARDRAM",
+      "offset": "0xE0C003"
+    },
+    {
+      "name": "WRMAINRAM",
+      "offset": "0xE0C004"
+    },
+    {
+      "name": "WRCARDRAM",
+      "offset": "0xE0C005"
+    },
+    {
+      "name": "SETSLOTCXROM",
+      "offset": "0xE0C006"
+    },
+    {
+      "name": "SETINTCXROM",
+      "offset": "0xE0C007"
+    },
+    {
+      "name": "SETSTDZP",
+      "offset": "0xE0C008"
+    },
+    {
+      "name": "SETALTZP",
+      "offset": "0xE0C009"
+    },
+    {
+      "name": "SETINTC3ROM",
+      "offset": "0xE0C00A"
+    },
+    {
+      "name": "SETSLOTC3ROM",
+      "offset": "0xE0C00B"
+    },
+    {
+      "name": "CLR80VID",
+      "offset": "0xE0C00C"
+    },
+    {
+      "name": "SET80VID",
+      "offset": "0xE0C00D"
+    },
+    {
+      "name": "CLRALTCHAR",
+      "offset": "0xE0C00E"
+    },
+    {
+      "name": "SETALTCHAR",
+      "offset": "0xE0C00F"
+    },
+    {
+      "name": "KBDSTRB",
+      "offset": "0xE0C010"
+    },
+    {
+      "name": "RDLCBNK2",
+      "offset": "0xE0C011"
+    },
+    {
+      "name": "RDLCRAM",
+      "offset": "0xE0C012"
+    },
+    {
+      "name": "RDRAMRD",
+      "offset": "0xE0C013"
+    },
+    {
+      "name": "RDRAMWRT",
+      "offset": "0xE0C014"
+    },
+    {
+      "name": "RDCXROM",
+      "offset": "0xE0C015"
+    },
+    {
+      "name": "RDALTZP",
+      "offset": "0xE0C016"
+    },
+    {
+      "name": "RDC3ROM",
+      "offset": "0xE0C017"
+    },
+    {
+      "name": "RD80STORE",
+      "offset": "0xE0C018"
+    },
+    {
+      "name": "RDVBLBAR",
+      "offset": "0xE0C019"
+    },
+    {
+      "name": "RDTEXT",
+      "offset": "0xE0C01A"
+    },
+    {
+      "name": "RDMIX",
+      "offset": "0xE0C01B"
+    },
+    {
+      "name": "RDPAGE2",
+      "offset": "0xE0C01C"
+    },
+    {
+      "name": "RDHIRES",
+      "offset": "0xE0C01D"
+    },
+    {
+      "name": "RDALTCHAR",
+      "offset": "0xE0C01E"
+    },
+    {
+      "name": "RD80VID",
+      "offset": "0xE0C01F"
+    },
+    {
+      "name": "TAPEOUT",
+      "offset": "0xE0C020"
+    },
+    {
+      "name": "MONOCOLOR",
+      "offset": "0xE0C021"
+    },
+    {
+      "name": "TBCOLOR",
+      "offset": "0xE0C022"
+    },
+    {
+      "name": "VGCINT",
+      "offset": "0xE0C023"
+    },
+    {
+      "name": "MOUSEDATA",
+      "offset": "0xE0C024"
+    },
+    {
+      "name": "KEYMODREG",
+      "offset": "0xE0C025"
+    },
+    {
+      "name": "DATAREG",
+      "offset": "0xE0C026"
+    },
+    {
+      "name": "KMSTATUS",
+      "offset": "0xE0C027"
+    },
+    {
+      "name": "ROMBANK",
+      "offset": "0xE0C028"
+    },
+    {
+      "name": "NEWVIDEO",
+      "offset": "0xE0C029"
+    },
+    {
+      "name": "LANGSEL",
+      "offset": "0xE0C02B"
+    },
+    {
+      "name": "CHARROM",
+      "offset": "0xE0C02C"
+    },
+    {
+      "name": "SLTROMSEL",
+      "offset": "0xE0C02D"
+    },
+    {
+      "name": "VERTCNT",
+      "offset": "0xE0C02E"
+    },
+    {
+      "name": "HORIZCNT",
+      "offset": "0xE0C02F"
+    },
+    {
+      "name": "SPKR",
+      "offset": "0xE0C030"
+    },
+    {
+      "name": "DISKREG",
+      "offset": "0xE0C031"
+    },
+    {
+      "name": "SCANINT",
+      "offset": "0xE0C032"
+    },
+    {
+      "name": "CLOCKDATA",
+      "offset": "0xE0C033"
+    },
+    {
+      "name": "CLOCKCTL",
+      "offset": "0xE0C034"
+    },
+    {
+      "name": "SHADOW",
+      "offset": "0xE0C035"
+    },
+    {
+      "name": "CYAREG",
+      "offset": "0xE0C036"
+    },
+    {
+      "name": "DMAREG",
+      "offset": "0xE0C037"
+    },
+    {
+      "name": "SCCBREG",
+      "offset": "0xE0C038"
+    },
+    {
+      "name": "SCCAREG",
+      "offset": "0xE0C039"
+    },
+    {
+      "name": "SCCBDATA",
+      "offset": "0xE0C03A"
+    },
+    {
+      "name": "SCCADATA",
+      "offset": "0xE0C03B"
+    },
+    {
+      "name": "SOUNDCTL",
+      "offset": "0xE0C03C"
+    },
+    {
+      "name": "SOUNDDATA",
+      "offset": "0xE0C03D"
+    },
+    {
+      "name": "SOUNDADRL",
+      "offset": "0xE0C03E"
+    },
+    {
+      "name": "SOUNDADRH",
+      "offset": "0xE0C03F"
+    },
+    {
+      "name": "INTMOUSE",
+      "offset": "0xE0C040"
+    },
+    {
+      "name": "INTEN",
+      "offset": "0xE0C041"
+    },
+    {
+      "name": "MMDELTAX",
+      "offset": "0xE0C044"
+    },
+    {
+      "name": "MMDELTAY",
+      "offset": "0xE0C045"
+    },
+    {
+      "name": "INTFLAG/DIAGTYPE",
+      "offset": "0xE0C046"
+    },
+    {
+      "name": "CLRVBLINT",
+      "offset": "0xE0C047"
+    },
+    {
+      "name": "CLRXYINT",
+      "offset": "0xE0C048"
+    },
+    {
+      "name": "EMUBYTE",
+      "offset": "0xE0C04F"
+    },
+    {
+      "name": "TXTCLR",
+      "offset": "0xE0C050"
+    },
+    {
+      "name": "TXTSET",
+      "offset": "0xE0C051"
+    },
+    {
+      "name": "MIXCLR",
+      "offset": "0xE0C052"
+    },
+    {
+      "name": "MIXSET",
+      "offset": "0xE0C053"
+    },
+    {
+      "name": "TXTPAGE1",
+      "offset": "0xE0C054"
+    },
+    {
+      "name": "TXTPAGE2",
+      "offset": "0xE0C055"
+    },
+    {
+      "name": "LORES",
+      "offset": "0xE0C056"
+    },
+    {
+      "name": "HIRES",
+      "offset": "0xE0C057"
+    },
+    {
+      "name": "CLRAN0",
+      "offset": "0xE0C058"
+    },
+    {
+      "name": "SETAN0",
+      "offset": "0xE0C059"
+    },
+    {
+      "name": "CLRAN1",
+      "offset": "0xE0C05A"
+    },
+    {
+      "name": "SETAN1",
+      "offset": "0xE0C05B"
+    },
+    {
+      "name": "CLRAN2",
+      "offset": "0xE0C05C"
+    },
+    {
+      "name": "SETAN2",
+      "offset": "0xE0C05D"
+    },
+    {
+      "name": "DHIRESON",
+      "offset": "0xE0C05E"
+    },
+    {
+      "name": "DHIRESOFF",
+      "offset": "0xE0C05F"
+    },
+    {
+      "name": "BUTN3",
+      "offset": "0xE0C060"
+    },
+    {
+      "name": "BUTN0",
+      "offset": "0xE0C061"
+    },
+    {
+      "name": "BUTN1",
+      "offset": "0xE0C062"
+    },
+    {
+      "name": "BUTN2",
+      "offset": "0xE0C063"
+    },
+    {
+      "name": "PADDL0",
+      "offset": "0xE0C064"
+    },
+    {
+      "name": "PADDL1",
+      "offset": "0xE0C065"
+    },
+    {
+      "name": "PADDL2",
+      "offset": "0xE0C066"
+    },
+    {
+      "name": "PADDL3",
+      "offset": "0xE0C067"
+    },
+    {
+      "name": "STATEREG",
+      "offset": "0xE0C068"
+    },
+    {
+      "name": "TESTREG",
+      "offset": "0xE0C06D"
+    },
+    {
+      "name": "PTRIG",
+      "offset": "0xE0C070"
+    },
+    {
+      "name": "BANKSEL",
+      "offset": "0xE0C073"
+    },
+    {
+      "name": "IOUDISON",
+      "offset": "0xE0C07E"
+    },
+    {
+      "name": "IOUDISOFF",
+      "offset": "0xE0C07F"
+    },
+    {
+      "name": "LC_RAM2_RD",
+      "offset": "0xE0C080"
+    },
+    {
+      "name": "LC_ROM_WR2",
+      "offset": "0xE0C081"
+    },
+    {
+      "name": "LC_ROM_RD2",
+      "offset": "0xE0C082"
+    },
+    {
+      "name": "LC_RAM2_WR",
+      "offset": "0xE0C083"
+    },
+    {
+      "name": "LC_RAM1_RD",
+      "offset": "0xE0C088"
+    },
+    {
+      "name": "LC_ROM_WR1",
+      "offset": "0xE0C089"
+    },
+    {
+      "name": "LC_ROM_RD1",
+      "offset": "0xE0C08A"
+    },
+    {
+      "name": "LC_RAM1_WR",
+      "offset": "0xE0C08B"
+    },
+    {
+      "name": "SLINKY_ADRL",
+      "offset": "0xE0C0C0"
+    },
+    {
+      "name": "SLINKY_ADRM",
+      "offset": "0xE0C0C1"
+    },
+    {
+      "name": "SLINKY_ADRH",
+      "offset": "0xE0C0C2"
+    },
+    {
+      "name": "SLINKY_DATA",
+      "offset": "0xE0C0C3"
+    },
+    {
+      "name": "IWM_PH0_OFF",
+      "offset": "0xE0C0E0"
+    },
+    {
+      "name": "IWM_PH0_ON",
+      "offset": "0xE0C0E1"
+    },
+    {
+      "name": "IWM_PH1_OFF",
+      "offset": "0xE0C0E2"
+    },
+    {
+      "name": "IWM_PH1_ON",
+      "offset": "0xE0C0E3"
+    },
+    {
+      "name": "IWM_PH2_OFF",
+      "offset": "0xE0C0E4"
+    },
+    {
+      "name": "IWM_PH2_ON",
+      "offset": "0xE0C0E5"
+    },
+    {
+      "name": "IWM_PH3_OFF",
+      "offset": "0xE0C0E6"
+    },
+    {
+      "name": "IWM_PH3_ON",
+      "offset": "0xE0C0E7"
+    },
+    {
+      "name": "IWM_MOTOR_OFF",
+      "offset": "0xE0C0E8"
+    },
+    {
+      "name": "IWM_MOTOR_ON",
+      "offset": "0xE0C0E9"
+    },
+    {
+      "name": "IWM_DRV_SEL0",
+      "offset": "0xE0C0EA"
+    },
+    {
+      "name": "IWM_DRV_SEL1",
+      "offset": "0xE0C0EB"
+    },
+    {
+      "name": "IWM_Q6L",
+      "offset": "0xE0C0EC"
+    },
+    {
+      "name": "IWM_Q6H",
+      "offset": "0xE0C0ED"
+    },
+    {
+      "name": "IWM_Q7L",
+      "offset": "0xE0C0EE"
+    },
+    {
+      "name": "IWM_Q7H",
+      "offset": "0xE0C0EF"
+    },
+    {
+      "name": "SLOT1_SERIAL_FW",
+      "offset": "0xE0C100"
+    },
+    {
+      "name": "SLOT2_SERIAL_FW",
+      "offset": "0xE0C200"
+    },
+    {
+      "name": "SLOT3_80COL_INIT",
+      "offset": "0xE0C300"
+    },
+    {
+      "name": "SLOT3_COUT",
+      "offset": "0xE0C305"
+    },
+    {
+      "name": "SLOT3_KEYIN",
+      "offset": "0xE0C307"
+    },
+    {
+      "name": "AUXMOVE",
+      "offset": "0xE0C311"
+    },
+    {
+      "name": "XFER",
+      "offset": "0xE0C314"
+    },
+    {
+      "name": "SLOT3_BASIC_INIT",
+      "offset": "0xE0C3EA"
+    },
+    {
+      "name": "SLOT3_DOS_INIT",
+      "offset": "0xE0C3F1"
+    },
+    {
+      "name": "SLOT4_MOUSE_FW",
+      "offset": "0xE0C400"
+    },
+    {
+      "name": "SETMOUSE",
+      "offset": "0xE0C412"
+    },
+    {
+      "name": "SERVEMOUSE",
+      "offset": "0xE0C413"
+    },
+    {
+      "name": "READMOUSE",
+      "offset": "0xE0C414"
+    },
+    {
+      "name": "CLEARMOUSE",
+      "offset": "0xE0C415"
+    },
+    {
+      "name": "POSMOUSE",
+      "offset": "0xE0C416"
+    },
+    {
+      "name": "CLAMPMOUSE",
+      "offset": "0xE0C417"
+    },
+    {
+      "name": "HOMEMOUSE",
+      "offset": "0xE0C418"
+    },
+    {
+      "name": "INITMOUSE",
+      "offset": "0xE0C419"
+    },
+    {
+      "name": "SMARTPORT_FW",
+      "offset": "0xE0C500"
+    },
+    {
+      "name": "SMARTPORT_ID",
+      "offset": "0xE0C5FB"
+    },
+    {
+      "name": "SMARTPORT_ENTRY_OFFSET",
+      "offset": "0xE0C5FF"
+    },
+    {
+      "name": "DISKII_BOOT",
+      "offset": "0xE0C600"
+    },
+    {
+      "name": "DISKII_READSECT",
+      "offset": "0xE0C65C"
+    },
+    {
+      "name": "SLOT7_BOOT",
+      "offset": "0xE0C700"
+    },
+    {
+      "name": "SLOT7_ID",
+      "offset": "0xE0C7FB"
+    },
+    {
+      "name": "SLOT7_ENTRY_OFFSET",
+      "offset": "0xE0C7FF"
+    },
+    {
+      "name": "CLRROM",
+      "offset": "0xE0CFFF"
+    },
+    {
+      "name": "APPLETALK_ENTRY",
+      "offset": "0xE0D600"
+    },
+    {
+      "name": "UserToolDispatch1",
+      "offset": "0xE10000"
+    },
+    {
+      "name": "UserToolDispatch2",
+      "offset": "0xE10004"
+    },
+    {
+      "name": "SystemToolDispatch1",
+      "offset": "0xE10008"
+    },
+    {
+      "name": "SystemToolDispatch2",
+      "offset": "0xE1000C"
+    },
+    {
+      "name": "IRQSCAN",
+      "offset": "0xE10028"
+    },
+    {
+      "name": "IRQSOUND",
+      "offset": "0xE1002C"
+    },
+    {
+      "name": "IRQVBL",
+      "offset": "0xE10030"
+    },
+    {
+      "name": "IRQMOUSE",
+      "offset": "0xE10034"
+    },
+    {
+      "name": "IRQQTR",
+      "offset": "0xE10038"
+    },
+    {
+      "name": "IRQKBD",
+      "offset": "0xE1003C"
+    },
+    {
+      "name": "IRQRESPONSE",
+      "offset": "0xE10040"
+    },
+    {
+      "name": "IRQSRQ",
+      "offset": "0xE10044"
+    },
+    {
+      "name": "IRQDSKACC",
+      "offset": "0xE10048"
+    },
+    {
+      "name": "IRQFLUSH",
+      "offset": "0xE1004C"
+    },
+    {
+      "name": "IRQMICRO",
+      "offset": "0xE10050"
+    },
+    {
+      "name": "IRQ1SEC",
+      "offset": "0xE10054"
+    },
+    {
+      "name": "IRQEXT",
+      "offset": "0xE10058"
+    },
+    {
+      "name": "IRQOTHER",
+      "offset": "0xE1005C"
+    },
+    {
+      "name": "CUPDATE",
+      "offset": "0xE10060"
+    },
+    {
+      "name": "INCBUSYFLG",
+      "offset": "0xE10064"
+    },
+    {
+      "name": "DECBUSYFLG",
+      "offset": "0xE10068"
+    },
+    {
+      "name": "BELLVECTOR",
+      "offset": "0xE1006C"
+    },
+    {
+      "name": "BREAKVECTOR",
+      "offset": "0xE10070"
+    },
+    {
+      "name": "TRACEVECTOR",
+      "offset": "0xE10074"
+    },
+    {
+      "name": "STEPVECTOR",
+      "offset": "0xE10078"
+    },
+    {
+      "name": "TOWRITEBR",
+      "offset": "0xE10080"
+    },
+    {
+      "name": "TOREADBR",
+      "offset": "0xE10084"
+    },
+    {
+      "name": "TOWRITETIME",
+      "offset": "0xE10088"
+    },
+    {
+      "name": "TOREADTIME",
+      "offset": "0xE1008C"
+    },
+    {
+      "name": "TOCTRLPANEL",
+      "offset": "0xE10090"
+    },
+    {
+      "name": "TOBRAMSETUP",
+      "offset": "0xE10094"
+    },
+    {
+      "name": "TOPRINTMSG8",
+      "offset": "0xE10098"
+    },
+    {
+      "name": "TOPRINTMSG16",
+      "offset": "0xE1009C"
+    },
+    {
+      "name": "CTRLYVECTOR",
+      "offset": "0xE100A0"
+    },
+    {
+      "name": "TOTEXTPG2DA",
+      "offset": "0xE100A4"
+    },
+    {
+      "name": "PRO16MLI",
+      "offset": "0xE100A8"
+    },
+    {
+      "name": "ProDOS16_StackDispatch",
+      "offset": "0xE100B0"
+    },
+    {
+      "name": "MSGPOINTER",
+      "offset": "0xE100C0"
+    },
+    {
+      "name": "SystemVolume",
+      "offset": "0xE100CA"
+    },
+    {
+      "name": "busyFlag",
+      "offset": "0xE100FF"
+    },
+    {
+      "name": "midiInputPoll",
+      "offset": "0xE101B2"
+    },
+    {
+      "name": "_CallBackVector",
+      "offset": "0xE10220"
+    },
+    {
+      "name": "KBD/CLR80COL",
+      "offset": "0xE1C000"
+    },
+    {
+      "name": "SET80COL",
+      "offset": "0xE1C001"
+    },
+    {
+      "name": "RDMAINRAM",
+      "offset": "0xE1C002"
+    },
+    {
+      "name": "RDCARDRAM",
+      "offset": "0xE1C003"
+    },
+    {
+      "name": "WRMAINRAM",
+      "offset": "0xE1C004"
+    },
+    {
+      "name": "WRCARDRAM",
+      "offset": "0xE1C005"
+    },
+    {
+      "name": "SETSLOTCXROM",
+      "offset": "0xE1C006"
+    },
+    {
+      "name": "SETINTCXROM",
+      "offset": "0xE1C007"
+    },
+    {
+      "name": "SETSTDZP",
+      "offset": "0xE1C008"
+    },
+    {
+      "name": "SETALTZP",
+      "offset": "0xE1C009"
+    },
+    {
+      "name": "SETINTC3ROM",
+      "offset": "0xE1C00A"
+    },
+    {
+      "name": "SETSLOTC3ROM",
+      "offset": "0xE1C00B"
+    },
+    {
+      "name": "CLR80VID",
+      "offset": "0xE1C00C"
+    },
+    {
+      "name": "SET80VID",
+      "offset": "0xE1C00D"
+    },
+    {
+      "name": "CLRALTCHAR",
+      "offset": "0xE1C00E"
+    },
+    {
+      "name": "SETALTCHAR",
+      "offset": "0xE1C00F"
+    },
+    {
+      "name": "KBDSTRB",
+      "offset": "0xE1C010"
+    },
+    {
+      "name": "RDLCBNK2",
+      "offset": "0xE1C011"
+    },
+    {
+      "name": "RDLCRAM",
+      "offset": "0xE1C012"
+    },
+    {
+      "name": "RDRAMRD",
+      "offset": "0xE1C013"
+    },
+    {
+      "name": "RDRAMWRT",
+      "offset": "0xE1C014"
+    },
+    {
+      "name": "RDCXROM",
+      "offset": "0xE1C015"
+    },
+    {
+      "name": "RDALTZP",
+      "offset": "0xE1C016"
+    },
+    {
+      "name": "RDC3ROM",
+      "offset": "0xE1C017"
+    },
+    {
+      "name": "RD80STORE",
+      "offset": "0xE1C018"
+    },
+    {
+      "name": "RDVBLBAR",
+      "offset": "0xE1C019"
+    },
+    {
+      "name": "RDTEXT",
+      "offset": "0xE1C01A"
+    },
+    {
+      "name": "RDMIX",
+      "offset": "0xE1C01B"
+    },
+    {
+      "name": "RDPAGE2",
+      "offset": "0xE1C01C"
+    },
+    {
+      "name": "RDHIRES",
+      "offset": "0xE1C01D"
+    },
+    {
+      "name": "RDALTCHAR",
+      "offset": "0xE1C01E"
+    },
+    {
+      "name": "RD80VID",
+      "offset": "0xE1C01F"
+    },
+    {
+      "name": "TAPEOUT",
+      "offset": "0xE1C020"
+    },
+    {
+      "name": "MONOCOLOR",
+      "offset": "0xE1C021"
+    },
+    {
+      "name": "TBCOLOR",
+      "offset": "0xE1C022"
+    },
+    {
+      "name": "VGCINT",
+      "offset": "0xE1C023"
+    },
+    {
+      "name": "MOUSEDATA",
+      "offset": "0xE1C024"
+    },
+    {
+      "name": "KEYMODREG",
+      "offset": "0xE1C025"
+    },
+    {
+      "name": "DATAREG",
+      "offset": "0xE1C026"
+    },
+    {
+      "name": "KMSTATUS",
+      "offset": "0xE1C027"
+    },
+    {
+      "name": "ROMBANK",
+      "offset": "0xE1C028"
+    },
+    {
+      "name": "NEWVIDEO",
+      "offset": "0xE1C029"
+    },
+    {
+      "name": "LANGSEL",
+      "offset": "0xE1C02B"
+    },
+    {
+      "name": "CHARROM",
+      "offset": "0xE1C02C"
+    },
+    {
+      "name": "SLTROMSEL",
+      "offset": "0xE1C02D"
+    },
+    {
+      "name": "VERTCNT",
+      "offset": "0xE1C02E"
+    },
+    {
+      "name": "HORIZCNT",
+      "offset": "0xE1C02F"
+    },
+    {
+      "name": "SPKR",
+      "offset": "0xE1C030"
+    },
+    {
+      "name": "DISKREG",
+      "offset": "0xE1C031"
+    },
+    {
+      "name": "SCANINT",
+      "offset": "0xE1C032"
+    },
+    {
+      "name": "CLOCKDATA",
+      "offset": "0xE1C033"
+    },
+    {
+      "name": "CLOCKCTL",
+      "offset": "0xE1C034"
+    },
+    {
+      "name": "SHADOW",
+      "offset": "0xE1C035"
+    },
+    {
+      "name": "CYAREG",
+      "offset": "0xE1C036"
+    },
+    {
+      "name": "DMAREG",
+      "offset": "0xE1C037"
+    },
+    {
+      "name": "SCCBREG",
+      "offset": "0xE1C038"
+    },
+    {
+      "name": "SCCAREG",
+      "offset": "0xE1C039"
+    },
+    {
+      "name": "SCCBDATA",
+      "offset": "0xE1C03A"
+    },
+    {
+      "name": "SCCADATA",
+      "offset": "0xE1C03B"
+    },
+    {
+      "name": "SOUNDCTL",
+      "offset": "0xE1C03C"
+    },
+    {
+      "name": "SOUNDDATA",
+      "offset": "0xE1C03D"
+    },
+    {
+      "name": "SOUNDADRL",
+      "offset": "0xE1C03E"
+    },
+    {
+      "name": "SOUNDADRH",
+      "offset": "0xE1C03F"
+    },
+    {
+      "name": "INTMOUSE",
+      "offset": "0xE1C040"
+    },
+    {
+      "name": "INTEN",
+      "offset": "0xE1C041"
+    },
+    {
+      "name": "MMDELTAX",
+      "offset": "0xE1C044"
+    },
+    {
+      "name": "MMDELTAY",
+      "offset": "0xE1C045"
+    },
+    {
+      "name": "INTFLAG/DIAGTYPE",
+      "offset": "0xE1C046"
+    },
+    {
+      "name": "CLRVBLINT",
+      "offset": "0xE1C047"
+    },
+    {
+      "name": "CLRXYINT",
+      "offset": "0xE1C048"
+    },
+    {
+      "name": "EMUBYTE",
+      "offset": "0xE1C04F"
+    },
+    {
+      "name": "TXTCLR",
+      "offset": "0xE1C050"
+    },
+    {
+      "name": "TXTSET",
+      "offset": "0xE1C051"
+    },
+    {
+      "name": "MIXCLR",
+      "offset": "0xE1C052"
+    },
+    {
+      "name": "MIXSET",
+      "offset": "0xE1C053"
+    },
+    {
+      "name": "TXTPAGE1",
+      "offset": "0xE1C054"
+    },
+    {
+      "name": "TXTPAGE2",
+      "offset": "0xE1C055"
+    },
+    {
+      "name": "LORES",
+      "offset": "0xE1C056"
+    },
+    {
+      "name": "HIRES",
+      "offset": "0xE1C057"
+    },
+    {
+      "name": "CLRAN0",
+      "offset": "0xE1C058"
+    },
+    {
+      "name": "SETAN0",
+      "offset": "0xE1C059"
+    },
+    {
+      "name": "CLRAN1",
+      "offset": "0xE1C05A"
+    },
+    {
+      "name": "SETAN1",
+      "offset": "0xE1C05B"
+    },
+    {
+      "name": "CLRAN2",
+      "offset": "0xE1C05C"
+    },
+    {
+      "name": "SETAN2",
+      "offset": "0xE1C05D"
+    },
+    {
+      "name": "DHIRESON",
+      "offset": "0xE1C05E"
+    },
+    {
+      "name": "DHIRESOFF",
+      "offset": "0xE1C05F"
+    },
+    {
+      "name": "BUTN3",
+      "offset": "0xE1C060"
+    },
+    {
+      "name": "BUTN0",
+      "offset": "0xE1C061"
+    },
+    {
+      "name": "BUTN1",
+      "offset": "0xE1C062"
+    },
+    {
+      "name": "BUTN2",
+      "offset": "0xE1C063"
+    },
+    {
+      "name": "PADDL0",
+      "offset": "0xE1C064"
+    },
+    {
+      "name": "PADDL1",
+      "offset": "0xE1C065"
+    },
+    {
+      "name": "PADDL2",
+      "offset": "0xE1C066"
+    },
+    {
+      "name": "PADDL3",
+      "offset": "0xE1C067"
+    },
+    {
+      "name": "STATEREG",
+      "offset": "0xE1C068"
+    },
+    {
+      "name": "TESTREG",
+      "offset": "0xE1C06D"
+    },
+    {
+      "name": "PTRIG",
+      "offset": "0xE1C070"
+    },
+    {
+      "name": "BANKSEL",
+      "offset": "0xE1C073"
+    },
+    {
+      "name": "IOUDISON",
+      "offset": "0xE1C07E"
+    },
+    {
+      "name": "IOUDISOFF",
+      "offset": "0xE1C07F"
+    },
+    {
+      "name": "LC_RAM2_RD",
+      "offset": "0xE1C080"
+    },
+    {
+      "name": "LC_ROM_WR2",
+      "offset": "0xE1C081"
+    },
+    {
+      "name": "LC_ROM_RD2",
+      "offset": "0xE1C082"
+    },
+    {
+      "name": "LC_RAM2_WR",
+      "offset": "0xE1C083"
+    },
+    {
+      "name": "LC_RAM1_RD",
+      "offset": "0xE1C088"
+    },
+    {
+      "name": "LC_ROM_WR1",
+      "offset": "0xE1C089"
+    },
+    {
+      "name": "LC_ROM_RD1",
+      "offset": "0xE1C08A"
+    },
+    {
+      "name": "LC_RAM1_WR",
+      "offset": "0xE1C08B"
+    },
+    {
+      "name": "SLINKY_ADRL",
+      "offset": "0xE1C0C0"
+    },
+    {
+      "name": "SLINKY_ADRM",
+      "offset": "0xE1C0C1"
+    },
+    {
+      "name": "SLINKY_ADRH",
+      "offset": "0xE1C0C2"
+    },
+    {
+      "name": "SLINKY_DATA",
+      "offset": "0xE1C0C3"
+    },
+    {
+      "name": "IWM_PH0_OFF",
+      "offset": "0xE1C0E0"
+    },
+    {
+      "name": "IWM_PH0_ON",
+      "offset": "0xE1C0E1"
+    },
+    {
+      "name": "IWM_PH1_OFF",
+      "offset": "0xE1C0E2"
+    },
+    {
+      "name": "IWM_PH1_ON",
+      "offset": "0xE1C0E3"
+    },
+    {
+      "name": "IWM_PH2_OFF",
+      "offset": "0xE1C0E4"
+    },
+    {
+      "name": "IWM_PH2_ON",
+      "offset": "0xE1C0E5"
+    },
+    {
+      "name": "IWM_PH3_OFF",
+      "offset": "0xE1C0E6"
+    },
+    {
+      "name": "IWM_PH3_ON",
+      "offset": "0xE1C0E7"
+    },
+    {
+      "name": "IWM_MOTOR_OFF",
+      "offset": "0xE1C0E8"
+    },
+    {
+      "name": "IWM_MOTOR_ON",
+      "offset": "0xE1C0E9"
+    },
+    {
+      "name": "IWM_DRV_SEL0",
+      "offset": "0xE1C0EA"
+    },
+    {
+      "name": "IWM_DRV_SEL1",
+      "offset": "0xE1C0EB"
+    },
+    {
+      "name": "IWM_Q6L",
+      "offset": "0xE1C0EC"
+    },
+    {
+      "name": "IWM_Q6H",
+      "offset": "0xE1C0ED"
+    },
+    {
+      "name": "IWM_Q7L",
+      "offset": "0xE1C0EE"
+    },
+    {
+      "name": "IWM_Q7H",
+      "offset": "0xE1C0EF"
+    }
+  ]
+}

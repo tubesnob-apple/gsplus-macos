@@ -35,6 +35,7 @@ typedef struct {
 	uint8_t  pbank;
 	uint8_t  m_state;   /* $C068 Machine State pseudo-register */
 	uint8_t  q_state;   /* lower 7 bits of $C035 | high bit of $C036 */
+	uint8_t  shadow;    /* full $C035 shadow register */
 	uint8_t  flag_m8;   /* 1 = 8-bit acc/mem, 0 = 16-bit */
 	uint8_t  flag_x8;   /* 1 = 8-bit index, 0 = 16-bit */
 	uint8_t  flag_e;    /* emulation-mode bit */
@@ -82,6 +83,16 @@ typedef struct {
 } Tracer_target;
 
 int tracer_decode_target(uint32_t pc, int m8, int x8, Tracer_target *out);
+
+/* ── Target-symbol lookup for the TSym disassembly column ───────────
+ *
+ * Resolves the address the instruction at `pc` refers to and looks it
+ * up in the loaded symbol index. Covers both data references (LDA/STA
+ * etc., using DBR) and control flow (JSR/JMP/JSL/JML/branches, using
+ * PBR). Returns a pointer into a static buffer (same lifetime as
+ * symbols_describe_pc) or NULL for instructions with no resolvable
+ * target or no matching symbol. */
+const char *tracer_target_symbol(uint32_t pc, int m8, int x8);
 
 /* ── Memory ──────────────────────────────────────────────────────── */
 

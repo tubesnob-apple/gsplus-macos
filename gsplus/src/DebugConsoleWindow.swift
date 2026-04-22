@@ -171,15 +171,11 @@ class DebugConsoleWindowController {
     private var embedded: Bool = false
 
     // Called every emulator tick — splices any new ring-buffer lines in
-    // above the current prompt.  For the standalone controller this
-    // also auto-opens the window on emulator halt.
+    // above the current prompt. The standalone console used to auto-open
+    // on halt here; that's now handled by the F9 Debugger Tracer window
+    // instead (TracerWindowController.updateIfNeeded), so this method
+    // only catches up log output when a window is already installed.
     func updateIfNeeded() {
-        if !embedded && !isOpen && g_halt_sim > 0 {
-            if window == nil { createWindow() }
-            syncAllLines()
-            window?.makeKeyAndOrderFront(nil)
-            window?.makeFirstResponder(textView)
-        }
         // Must be installed (window open OR embedded); otherwise nothing
         // to splice into.
         if !embedded && !isOpen { return }

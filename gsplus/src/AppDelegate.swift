@@ -381,6 +381,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 		}
 		mainwin_info.update()
 		debugwin_info.update()
+		tracerWindow.updateIfNeeded()
 		debugConsole.updateIfNeeded()
 	}
 }

@@ -43,6 +43,7 @@ gsplus: $(OBJECTS) $(OBJECTS1) compile_time.o $(SWIFTOBJS)
 	cp -f Info.plist ../GSplus.app/Contents/
 	$(PROJROOT)/lib/make_mac_icon $(PROJROOT)/lib/kegsicon.png
 	cp -f kegs.icns ../GSplus.app/Contents/Resources/
+	cp -f iigs.symbols ../GSplus.app/Contents/Resources/
 	touch '../GSplus.app/Icon?'
 	rm -f '../GSplus.app/Icon?'
 	codesign --force --deep --sign - ../GSplus.app
